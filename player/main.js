@@ -185,6 +185,7 @@ vid.addEventListener('error', function() {
 });
 vid.addEventListener('canplay', function() {
     document.title = decodeURIComponent(vid.src.substring(vid.src.lastIndexOf('/')+1));
+    if ($_GET('start') > 0) vid.currentTime = $_GET('start');
     if ($_GET('autoplay') !== null) vid.play();
 });
 
@@ -228,7 +229,7 @@ if ($_GET('src')) {
     vidCanPlay = true;
     try {
         vid.src = atob($_GET('src')).replace('"', '');
-        if ($_GET('start') > 0) vid.currentTime = $_GET('start');
+        vid.load();
     } catch (error) {
         var vidCanPlay = false;
     }
