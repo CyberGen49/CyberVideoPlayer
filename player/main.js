@@ -44,14 +44,17 @@ function $_GET(name, url = window.location.href) {
     }
 }
 
+// Get the video object
 var vid = _id('vid');
 
+// Add a 'playing' attribute to the video object
 Object.defineProperty(HTMLMediaElement.prototype, 'playing', {
     get: function(){
         return !!(this.currentTime > 0 && !this.paused && !this.ended && this.readyState > 2);
     }
 });
 
+// Toggles the video between playing and paused
 const togglePlayPause = function() {
     if (!window.vidCanPlay) return;
     if (vid.playing) {
@@ -64,6 +67,7 @@ const togglePlayPause = function() {
     resetControlTimeout();
 }
 
+// Toggles mute
 const toggleMute = function() {
     if (!window.vidCanPlay) return;
     if (vid.muted) {
@@ -76,6 +80,7 @@ const toggleMute = function() {
     resetControlTimeout();
 }
 
+// Flashes a big centered icon
 var bigIndicatorTimeout;
 const showBigIndicator = function(icon, persist = false) {
     if (!persist && !window.vidCanPlay) return;
@@ -96,13 +101,19 @@ const showBigIndicator = function(icon, persist = false) {
     }, 50);
 }
 
+// Handle hiding and showing the controls
 var controlsTimeout;
 var controlsVisible = true;
 const resetControlTimeout = function(timeout = 3000) {
     clearTimeout(controlsTimeout);
+    _id('body').style.cursor = 'initial';
     _id('controls').classList.add('visible');
-    window.controlsVisible = true;
+    // This small timeout makes sure other functions have time to react to controls not being visible before they're marked as visible
+    setTimeout(() => {
+        window.controlsVisible = true;
+    }, 50);
     window.controlsTimeout = setTimeout(() => {
+        _id('body').style.cursor = 'none';
         if (vid.playing) _id('controls').classList.remove('visible');
         window.controlsVisible = false;
     }, timeout);
@@ -148,6 +159,10 @@ vid.addEventListener('error', function() {
 
 // Handle play/pause buttons
 _id('playPause').addEventListener('click', function() {
+    if (!window.controlsVisible) {
+        resetControlTimeout();
+        return;
+    }
     togglePlayPause();
 });
 _id('playPauseHitArea').addEventListener('click', function() {
@@ -162,11 +177,20 @@ _id('playPauseBig').addEventListener('click', function(e) {
 
 // Handle the volume button
 _id('volume').addEventListener('click', function() {
+    if (!window.controlsVisible) {
+        resetControlTimeout();
+        return;
+    }
     toggleMute();
 });
 
 // Handle toggling fullscreen
 _id('fullscreen').addEventListener('click', function() {
+    if (!window.controlsVisible) {
+        resetControlTimeout();
+        console.log('t');
+        return;
+    }
     document.documentElement.requestFullscreen();
     if (document.fullscreenElement !== null)
         document.exitFullscreen();
@@ -195,19 +219,33 @@ _id('forward').addEventListener('click', function() {
 var vidScrubbing = false;
 var vidScrubbingState;
 _id('progressSliderInner').addEventListener('mousedown', function() {
+    if (!window.controlsVisible) {
+        resetControlTimeout();
+        return;
+    }
     vidScrubbingState = vid.playing;
     window.vidScrubbing = true;
     vid.pause();
 });
 _id('progressSliderInner').addEventListener('input', function() {
+    if (!window.controlsVisible) {
+        resetControlTimeout();
+        return;
+    }
     vid.currentTime = this.value;
     _id('progressTime').innerHTML = secondsFormat(this.value);
     _id('progressFakeFront').style.width = `${(Math.round(this.value)/Math.ceil(vid.duration))*100}%`;
-    resetControlTimeout();
 });
 _id('progressSliderInner').addEventListener('mouseup', function() {
+    if (!window.controlsVisible) {
+        resetControlTimeout();
+        return;
+    }
     window.vidScrubbing = false;
     if (vidScrubbingState) vid.play();
+});
+_id('controlBar').addEventListener('mousemove', function() {
+    resetControlTimeout();
 });
 
 // Handle re-showing the controls on desktop

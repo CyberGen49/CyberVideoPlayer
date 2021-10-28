@@ -33,12 +33,10 @@ video {
 #controls {
     transition: 0.2s ease-in-out;
     opacity: 0;
-    cursor: none;
 }
 
 #controls.visible {
     opacity: 1;
-    cursor: initial;
 }
 
 #controlBar {
@@ -88,7 +86,7 @@ video {
     padding: 0px 10px;
 }
 
-#controlsMobile, 
+#controlsMobile,
 #playPauseHitArea {
     position: absolute;
     top: 0px;
