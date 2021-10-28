@@ -1,0 +1,193 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700;800&display=swap');
+
+* {
+    font-family: 'Segoe UI', 'Open Sans', 'Roboto', sans-serif;
+}
+
+#main {
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    position: absolute;
+    background: #000;
+}
+
+#vidContainer {
+    position: relative;
+    margin: auto;
+    width: 100%;
+    height: 100%;
+    user-select: none;
+    outline: none;
+    overflow: hidden;
+}
+
+video {
+    width: 100%;
+    height: 100%;
+}
+
+#controls {
+    transition: 0.2s ease-in-out;
+    opacity: 0;
+    cursor: none;
+}
+
+#controls.visible {
+    opacity: 1;
+    cursor: initial;
+}
+
+#controlBar {
+    position: absolute;
+    bottom: 20px;
+    left: 15px;
+    width: calc(100% - 30px);
+    height: 45px;
+    padding: 0px 5px;
+    background: rgba(50, 50, 50, 0.7);
+    backdrop-filter: blur(10px);
+    border-radius: 1000px;
+    box-shadow: 0px 2px 10px 0px rgba(0,0,0,0.3);
+}
+
+#volBarFakeBack,
+#volBarFakeBack,
+#progressFakeBack,
+#progressFakeFront,
+.bufferPoint {
+    position: absolute;
+    top: 21px;
+    left: 0px;
+    width: 100%;
+    height: 5px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 100px;
+}
+#progressFakeFront {
+    width: 0%;
+    background: #fff;
+}
+
+.controlsButton {
+    font-size: 26px;
+    color: #fff;
+    padding: 6px;
+    margin: 0px 3px;
+    border-radius: 100px;
+    transition: 0.1s ease-in-out;
+}
+
+.controlsText {
+    font-family: "Segoe UI", sans-serif;
+    font-size: 14px;
+    color: #fff;
+    padding: 0px 10px;
+}
+
+#controlsMobile, 
+#playPauseHitArea {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+}
+
+#bigIndicators {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    pointer-events: none;
+}
+
+#controlsMobile,
+#bigIndicators {
+    padding-bottom: 60px;
+}
+
+.bigButton,
+#bigIndicator {
+    margin: auto;
+    width: 140px;
+    height: 140px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 90px;
+    color: #fff;
+    background: rgba(50, 50, 50, 0.7);
+    backdrop-filter: blur(10px);
+    border-radius: 1000px;
+    box-shadow: 0px 2px 10px 0px rgba(0,0,0,0.3);
+    transition: 0.1s ease-in-out;
+}
+.bigButton {
+    width: 100px;
+    height: 100px;
+    font-size: 60px;
+}
+.bigButton:active {
+    background: rgba(80, 80, 80, 0.7)
+}
+
+#progressSlider {
+    position: absolute;
+    top: 14px;
+    left: 0px;
+    width: 100%;
+    opacity: 0;
+    transition: 0.1s ease-in-out;
+}
+#progressSlider:hover {
+    opacity: 1;
+}
+#progressSliderInner {
+    width: 100%;
+    appearance: none;
+    background: rgba(0, 0, 0, 0);
+    outline: none;
+}
+#progressSliderInner::-webkit-slider-thumb {
+    appearance: none;
+    width: 12px;
+    height: 12px;
+    background: #fff;
+    border-radius: 1000px;
+    cursor: default;
+}
+
+.touch {
+    display: none;
+}
+
+@media only screen and (pointer: coarse) {
+    #progressTime {
+        padding-left: 15px;
+    }
+
+    .touch {
+        display: inherit !important;
+    }
+    .pointer {
+        display: none !important;
+    }
+}
+
+@media only screen and (hover: hover) {
+    .controlsButton:hover {
+        background: rgba(255, 255, 255, 0.2);
+    }
+}
+
+@media only screen and (hover: none) {
+    .controlsButton:active {
+        background: rgba(255, 255, 255, 0.2);
+    }
+}
