@@ -185,6 +185,7 @@ vid.addEventListener('error', function() {
 });
 vid.addEventListener('canplay', function() {
     document.title = decodeURIComponent(vid.src.substring(vid.src.lastIndexOf('/')+1));
+    if ($_GET('autoplay') !== null) vid.play();
 });
 
 //_id('vidContainer').addEventListener('keydown', function(event) {
@@ -228,7 +229,6 @@ if ($_GET('src')) {
     try {
         vid.src = atob($_GET('src')).replace('"', '');
         if ($_GET('start') > 0) vid.currentTime = $_GET('start');
-        if ($_GET('autoplay') !== null) vid.play();
     } catch (error) {
         var vidCanPlay = false;
     }
