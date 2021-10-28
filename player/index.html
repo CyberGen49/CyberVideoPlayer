@@ -490,7 +490,7 @@
             if ($_GET('src')) {
                 vidCanPlay = true;
                 try {
-                    vid.src = atob($_GET('src'));
+                    vid.src = atob($_GET('src')).replace('"', '');
                     if ($_GET('start') > 0) vid.currentTime = $_GET('start');
                     if ($_GET('autoplay') !== null) vid.play();
                 } catch (error) {
@@ -498,8 +498,15 @@
                 }
             }
             if (!vidCanPlay) showBigIndicator('block', true);
-
-            //_id('vidContainer').focus();
+            
+            if ($_GET('script')) {
+                try {
+                    let script = atob($_GET('script')).replace('"', '');
+                    _id('body').insertAdjacentHTML('beforeend', `
+                        <script src="${script}">
+                    `);
+                } catch (error) {}
+            }
         </script>
     </body>
 </html>
