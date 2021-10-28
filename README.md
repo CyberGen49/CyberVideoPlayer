@@ -1,5 +1,10 @@
+
 # CyberVideoPlayer
 A clean and functional embeddable HTML video player, hosted with Github Pages.
+
+## Features
+* A sleek, mobile-friendly design with rounded elements and blurred backgrounds
+* Easily skip forward and back 10 seconds with the left and right arrow keys
 
 ## Usage
 Example working URL:  

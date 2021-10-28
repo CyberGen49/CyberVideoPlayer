@@ -96,6 +96,57 @@ const showBigIndicator = function(icon, persist = false) {
     }, 50);
 }
 
+var controlsTimeout;
+var controlsVisible = true;
+const resetControlTimeout = function(timeout = 3000) {
+    clearTimeout(controlsTimeout);
+    _id('controls').classList.add('visible');
+    window.controlsVisible = true;
+    window.controlsTimeout = setTimeout(() => {
+        if (vid.playing) _id('controls').classList.remove('visible');
+        window.controlsVisible = false;
+    }, timeout);
+}
+
+// Do this stuff when the video can start playing
+vid.addEventListener('canplay', function() {
+    document.title = decodeURIComponent(vid.src.substring(vid.src.lastIndexOf('/')+1));
+    if ($_GET('start') > 0) vid.currentTime = $_GET('start');
+    if ($_GET('autoplay') !== null) vid.play();
+});
+// Do this stuff when the video's duration changes
+vid.addEventListener('durationchange', function() {
+    _id('duration').innerHTML = secondsFormat(vid.duration);
+    _id('progressSliderInner').max = Math.ceil(vid.duration);
+});
+// Do this stuff when the video's progress changes
+vid.addEventListener('timeupdate', function() {
+    if (!window.vidScrubbing) {
+        _id('progressTime').innerHTML = secondsFormat(vid.currentTime);
+        _id('progressFakeFront').style.width = `${(Math.round(vid.currentTime)/Math.ceil(vid.duration))*100}%`;
+        _id('progressSliderInner').value = Math.round(vid.currentTime);
+    }
+});
+// Do this stuff when the video buffers more data
+vid.addEventListener('progress', function() {
+    let ranges = vid.buffered.length;
+    let duration = vid.duration;
+    for (i = 0; i < ranges; i++) {
+        let start = vid.buffered.start(i);
+        let end = vid.buffered.end(i);
+        //console.log(`Buffer ${i} starts at ${start} and ends at ${end}`);
+        let html = '';
+        html += `<div class="bufferPoint" style="left: ${(start/duration)*100}%; width: ${((end-start)/duration)*100}%"></div>`;
+        _id('bufferPoints').innerHTML = html;
+    }
+});
+// Do this stuff if the video fails to load
+vid.addEventListener('error', function() {
+    window.vidCanPlay = false;
+    showBigIndicator('videocam_off', true);
+});
+
+// Handle play/pause buttons
 _id('playPause').addEventListener('click', function() {
     togglePlayPause();
 });
@@ -108,15 +159,19 @@ _id('playPauseBig').addEventListener('click', function(e) {
         togglePlayPause();
     }
 });
+
+// Handle the volume button
 _id('volume').addEventListener('click', function() {
     toggleMute();
 });
+
+// Handle toggling fullscreen
 _id('fullscreen').addEventListener('click', function() {
-    _id('vidContainer').requestFullscreen();
+    document.documentElement.requestFullscreen();
     if (document.fullscreenElement !== null)
         document.exitFullscreen();
     else
-        _id('vidContainer').requestFullscreen();
+        document.documentElement.requestFullscreen();
 });
 document.onfullscreenchange = function() {
     if (document.fullscreenElement !== null)
@@ -124,6 +179,8 @@ document.onfullscreenchange = function() {
     else
         _id('fullscreen').innerHTML = 'fullscreen';
 }
+
+// Handle jumping back and forward in time
 _id('backward').addEventListener('click', function() {
     vid.currentTime = (vid.currentTime-10);
     showBigIndicator('replay_10');
@@ -133,17 +190,8 @@ _id('forward').addEventListener('click', function() {
     vid.currentTime = (vid.currentTime-0.25);
     showBigIndicator('forward_10');
 });
-vid.addEventListener('durationchange', function() {
-    _id('duration').innerHTML = secondsFormat(vid.duration);
-    _id('progressSliderInner').max = Math.ceil(vid.duration);
-});
-vid.addEventListener('timeupdate', function() {
-    if (!window.vidScrubbing) {
-        _id('progressTime').innerHTML = secondsFormat(vid.currentTime);
-        _id('progressFakeFront').style.width = `${(Math.round(vid.currentTime)/Math.ceil(vid.duration))*100}%`;
-        _id('progressSliderInner').value = Math.round(vid.currentTime);
-    }
-});
+
+// Handle the progress slider
 var vidScrubbing = false;
 var vidScrubbingState;
 _id('progressSliderInner').addEventListener('mousedown', function() {
@@ -161,32 +209,12 @@ _id('progressSliderInner').addEventListener('mouseup', function() {
     window.vidScrubbing = false;
     if (vidScrubbingState) vid.play();
 });
-vid.addEventListener('progress', function() {
-    let ranges = vid.buffered.length;
-    let duration = vid.duration;
-    for (i = 0; i < ranges; i++) {
-        let start = vid.buffered.start(i);
-        let end = vid.buffered.end(i);
-        //console.log(`Buffer ${i} starts at ${start} and ends at ${end}`);
-        let html = '';
-        html += `<div class="bufferPoint" style="left: ${(start/duration)*100}%; width: ${((end-start)/duration)*100}%"></div>`;
-        _id('bufferPoints').innerHTML = html;
-    }
-});
-var controlsTimeout;
-var controlsVisible = true;
-const resetControlTimeout = function(timeout = 3000) {
-    clearTimeout(controlsTimeout);
-    _id('controls').classList.add('visible');
-    window.controlsVisible = true;
-    window.controlsTimeout = setTimeout(() => {
-        if (vid.playing) _id('controls').classList.remove('visible');
-        window.controlsVisible = false;
-    }, timeout);
-}
+
+// Handle re-showing the controls on desktop
 _id('playPauseHitArea').addEventListener('mousemove', function() {
     resetControlTimeout();
 });
+// Handle showing/hiding the controls with a tap on mobile
 _id('controlsMobile').addEventListener('click', function() {
     if (window.controlsVisible) {
         resetControlTimeout(100);
@@ -194,17 +222,8 @@ _id('controlsMobile').addEventListener('click', function() {
         resetControlTimeout();
     }
 });
-vid.addEventListener('error', function() {
-    window.vidCanPlay = false;
-    showBigIndicator('videocam_off', true);
-});
-vid.addEventListener('canplay', function() {
-    document.title = decodeURIComponent(vid.src.substring(vid.src.lastIndexOf('/')+1));
-    if ($_GET('start') > 0) vid.currentTime = $_GET('start');
-    if ($_GET('autoplay') !== null) vid.play();
-});
 
-//_id('vidContainer').addEventListener('keydown', function(event) {
+// Handle keyboard shortcuts
 document.addEventListener('keydown', function(event) {
     resetControlTimeout();
     switch (event.code) {
@@ -226,7 +245,8 @@ document.addEventListener('keydown', function(event) {
     }
 });
 
-var playPauseInterval = setInterval(() => {
+// Handle dynamically updating button icons
+var dynamicButtonInterval = setInterval(() => {
     if (vid.playing) {
         _id('playPause').innerHTML = 'pause';
         _id('playPauseBig').innerHTML = 'pause';
@@ -245,6 +265,7 @@ var playPauseInterval = setInterval(() => {
     }
 }, 250);
 
+// Handle loading the video file
 var vidCanPlay = false;
 if ($_GET('src')) {
     vidCanPlay = true;
@@ -257,6 +278,7 @@ if ($_GET('src')) {
 }
 if (!vidCanPlay) showBigIndicator('block', true);
 
+// Handle loading a custom script
 if ($_GET('script')) {
     try {
         let script = atob($_GET('script')).replace('"', '');
