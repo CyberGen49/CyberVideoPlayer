@@ -12,9 +12,14 @@ https://vid.simplecyber.org/player/?src=aHR0cDovL2NvbW1vbmRhdGFzdG9yYWdlLmdvb2ds
 
 Embedding the player on your site:
 ```html
-<iframe src="https://vid.simplecyber.org/player/?src=aHR0cDovL2NvbW1vbmRhdGFzdG9yYWdlLmdvb2dsZWFwaXMuY29tL2d0di12aWRlb3MtYnVja2V0L3NhbXBsZS9CaWdCdWNrQnVubnkubXA0&autoplay" frameborder=0 width=640 height=480>
-```  
-Of course, `width` and `height` can be changed here to suit your needs, or removed entirely to style with CSS.
+<!-- `width` and `height` can be changed here to suit your needs, or removed entirely to style with CSS -->
+<!-- Be sure to replace `src` with your own link -->
+<iframe src="https://vid.simplecyber.org/player/?src=aHR0cDovL2NvbW1vbmRhdGFzdG9yYWdlLmdvb2dsZWFwaXMuY29tL2d0di12aWRlb3MtYnVja2V0L3NhbXBsZS9CaWdCdWNrQnVubnkubXA0&autoplay"
+        frameborder=0
+        width=640
+        height=480
+>
+```
 
 This repository can be cloned if you want to add your own custom domain or make other modifications.
 
