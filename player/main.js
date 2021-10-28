@@ -57,12 +57,23 @@ const togglePlayPause = function() {
     if (vid.playing) {
         vid.pause();
         showBigIndicator('pause');
-        resetControlTimeout();
     } else {
         vid.play();
         showBigIndicator('play_arrow');
-        resetControlTimeout(2000);
     }
+    resetControlTimeout();
+}
+
+const toggleMute = function() {
+    if (!window.vidCanPlay) return;
+    if (vid.muted) {
+        vid.muted = false;
+        showBigIndicator('volume_up');
+    } else {
+        vid.muted = true;
+        showBigIndicator('volume_off');
+    }
+    resetControlTimeout();
 }
 
 var bigIndicatorTimeout;
@@ -96,6 +107,9 @@ _id('playPauseBig').addEventListener('click', function(e) {
         e.stopPropagation();
         togglePlayPause();
     }
+});
+_id('volume').addEventListener('click', function() {
+    toggleMute();
 });
 _id('fullscreen').addEventListener('click', function() {
     _id('vidContainer').requestFullscreen();
@@ -141,6 +155,7 @@ _id('progressSliderInner').addEventListener('input', function() {
     vid.currentTime = this.value;
     _id('progressTime').innerHTML = secondsFormat(this.value);
     _id('progressFakeFront').style.width = `${(Math.round(this.value)/Math.ceil(vid.duration))*100}%`;
+    resetControlTimeout();
 });
 _id('progressSliderInner').addEventListener('mouseup', function() {
     window.vidScrubbing = false;
@@ -160,7 +175,7 @@ vid.addEventListener('progress', function() {
 });
 var controlsTimeout;
 var controlsVisible = true;
-const resetControlTimeout = function(timeout = 5000) {
+const resetControlTimeout = function(timeout = 3000) {
     clearTimeout(controlsTimeout);
     _id('controls').classList.add('visible');
     window.controlsVisible = true;
@@ -221,6 +236,12 @@ var playPauseInterval = setInterval(() => {
     } else {
         _id('playPause').innerHTML = 'play_arrow';
         _id('playPauseBig').innerHTML = 'play_arrow';
+    }
+
+    if (vid.muted) {
+        _id('volume').innerHTML = 'volume_off';
+    } else {
+        _id('volume').innerHTML = 'volume_up';
     }
 }, 250);
 
