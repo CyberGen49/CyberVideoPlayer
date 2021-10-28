@@ -1,5 +1,5 @@
 # CyberVideoPlayer
-A clean and functional embeddable HTML video player, hosted with Github Pages.9
+A clean and functional embeddable HTML video player, hosted with Github Pages.
 
 ## Usage
 Example working URL:  
