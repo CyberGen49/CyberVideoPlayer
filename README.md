@@ -4,26 +4,31 @@ A clean and functional embeddable HTML video player, hosted with Github Pages.
 
 ## Features
 * A sleek, mobile-friendly design with rounded elements and blurred backgrounds
-* Easily skip forward and back 10 seconds with the left and right arrow keys
+* Keyboard shortcuts:
+    * `Space`: Play/pause the video
+    * `F`: Toggle fullscreen
+    * `M`: Toggle mute
+    * `Left arrow`: Skip back 10 seconds
+    * `Right arrow`: Skip forward 10 seconds
 
 ## Usage
 Example working URL:  
-https://vid.simplecyber.org/player/?src=aHR0cDovL2NvbW1vbmRhdGFzdG9yYWdlLmdvb2dsZWFwaXMuY29tL2d0di12aWRlb3MtYnVja2V0L3NhbXBsZS9CaWdCdWNrQnVubnkubXA0&autoplay
+https://cybergen49.github.io/CyberVideoPlayer/player/?src=aHR0cDovL2NvbW1vbmRhdGFzdG9yYWdlLmdvb2dsZWFwaXMuY29tL2d0di12aWRlb3MtYnVja2V0L3NhbXBsZS9CaWdCdWNrQnVubnkubXA0&autoplay
 
 Embedding the player on your site:
 ```html
 <!-- `width` and `height` can be changed here to suit your needs, or removed entirely to style with CSS -->
 <!-- Be sure to replace `src` with your own link -->
-<iframe src="https://vid.simplecyber.org/player/?src=aHR0cDovL2NvbW1vbmRhdGFzdG9yYWdlLmdvb2dsZWFwaXMuY29tL2d0di12aWRlb3MtYnVja2V0L3NhbXBsZS9CaWdCdWNrQnVubnkubXA0&autoplay"
+<iframe src="https://cybergen49.github.io/CyberVideoPlayer/player/?src=aHR0cDovL2NvbW1vbmRhdGFzdG9yYWdlLmdvb2dsZWFwaXMuY29tL2d0di12aWRlb3MtYnVja2V0L3NhbXBsZS9CaWdCdWNrQnVubnkubXA0&autoplay"
         frameborder=0
         width=640
         height=480
 >
 ```
 
-This repository can be cloned if you want to add your own custom domain or make other modifications.
+You can replace `cybergen49.github.io/CyberVideoPlayer` with `vid.simplecyber.org` for a shorter URL. That domain won't work if you clone or download the repository.
 
-**Note:** If `vid.simplecyber.org` ever ceases to function, use `cybergen49.github.io/CyberVideoPlayer` instead.
+This repository is a template, so it's easy to clone it for yourself if you want to make changes or use your own domain.
 
 ## Query String Parameters
 ### Required
