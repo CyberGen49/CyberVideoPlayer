@@ -40,6 +40,6 @@ This repository is a template, so it's easy to clone it for yourself if you want
 * `script=url`: An external Javascript file to include when loading the page, where `url` is an absolute URL to a Javascript file
 
 ## Changelog
-## 1.0.0 - 2021-10-27
+### 1.0.0 - 2021-10-27
 * Initial release
     * I developed the bulk of this project over the past day or so, before creating this repository. It wasn't until I had the idea of hosting the player on Github Pages that I decided to make it it's own repo.
