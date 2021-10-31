@@ -42,6 +42,7 @@ This repository is a template, so it's easy to clone it for yourself if you want
 ## Changelog
 ### 1.1.0 - 2021-10-28
 * Further refinement
+* Updated the fullscreen functionality to hide system navigation elements like the Android navigation bar
 
 ### 1.0.0 - 2021-10-27
 * Initial release
