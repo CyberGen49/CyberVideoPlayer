@@ -143,9 +143,6 @@ video {
     opacity: 0;
     transition: 0.1s ease-in-out;
 }
-#progressSlider:hover {
-    opacity: 1;
-}
 #progressSliderInner {
     width: 100%;
     appearance: none;
@@ -182,10 +179,16 @@ video {
     .controlsButton:hover {
         background: rgba(255, 255, 255, 0.2);
     }
+    #progressSlider:hover {
+        opacity: 1;
+    }
 }
 
 @media only screen and (hover: none) {
     .controlsButton:active {
         background: rgba(255, 255, 255, 0.2);
+    }
+    #progressSlider:active {
+        opacity: 1;
     }
 }

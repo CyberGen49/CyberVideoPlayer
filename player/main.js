@@ -55,13 +55,16 @@ Object.defineProperty(HTMLMediaElement.prototype, 'playing', {
 });
 
 // Toggles the video between playing and paused
+// We throw some extra timeouts in here to make extra sure that things actually happen
 const togglePlayPause = function() {
     if (!window.vidCanPlay) return;
     if (vid.playing) {
         vid.pause();
+        setTimeout(() => { vid.pause(); }, 50);
         showBigIndicator('pause');
     } else {
         vid.play();
+        setTimeout(() => { vid.play(); }, 50);
         showBigIndicator('play_arrow');
     }
     resetControlTimeout();
@@ -113,9 +116,11 @@ const resetControlTimeout = function(timeout = 3000) {
         window.controlsVisible = true;
     }, 50);
     window.controlsTimeout = setTimeout(() => {
-        _id('body').style.cursor = 'none';
-        if (vid.playing) _id('controls').classList.remove('visible');
-        window.controlsVisible = false;
+        if (vid.playing) {
+            _id('body').style.cursor = 'none';
+            _id('controls').classList.remove('visible');
+            window.controlsVisible = false;
+        }
     }, timeout);
 }
 
@@ -191,11 +196,10 @@ _id('fullscreen').addEventListener('click', function() {
         console.log('t');
         return;
     }
-    document.documentElement.requestFullscreen();
     if (document.fullscreenElement !== null)
         document.exitFullscreen();
     else
-        document.documentElement.requestFullscreen();
+        document.documentElement.requestFullscreen({ navigationUI: 'hide' });
 });
 document.onfullscreenchange = function() {
     if (document.fullscreenElement !== null)
