@@ -28,6 +28,7 @@ Embedding the player on your site:
         frameborder=0
         width=640
         height=480
+        id="videoPlayer"
 >
 ```
 
@@ -49,7 +50,7 @@ These parameters control various aspects of the player. Pass them after the main
 * `noDownload`: Removes the Download context menu option
 
 ## Reading data from the player
-CyberVideoPlayer allows for its parent site to access some video information. Use the following Javascript in your site to read and save data sent from the player:
+CyberVideoPlayer allows for its parent site to access some video information. Use the following Javascript on your site to read and save data sent from the player:
 ```js
 // Save messages from the player
 var videoData = {};
@@ -67,7 +68,23 @@ window.onmessage = function(e) {
 * `time`: The current video position in seconds
 * `duration`: The total video duration in seconds
 
-Note that the player only sends data as it changes, so you shouldn't rely on a property existing at any given time. The use of `Object.assign()` allows us to update the `videoData` object with the most up to date data and use it elsewhere.
+Note that the player only sends data as it changes, so you shouldn't rely on a property existing at any given time. The use of `Object.assign()` allows us to update the `videoData` object with the most up-to-date data and use it elsewhere.
+
+## Sending commands to the player
+In addition to reading data from the player, you can also send it commands to control it. Use the following Javascript to send a command to the player.
+```js
+// Replace 'videoPlayer' with the ID of your <iframe>
+var player = document.getElementById("videoPlayer");
+// Build the command
+var msg = {'cmd': 'pause'};
+// Send the message
+player.contentWindow.postMessage(msg, '*');
+```
+
+### Commands
+* `{'cmd': 'play'}`: Plays the video
+* `{'cmd': 'pause'}`: Pauses the video
+* `{'cmd': 'time', 'time': t}`: Changes the current time of the video, where `t` is a number of seconds
 
 ## Changelog
 ### 1.2.0 - 2021-10-31

@@ -682,3 +682,11 @@ if ($_GET('script')) {
 if ($_GET('noBackground') !== null) {
     _id('body').style.background = "rgba(0, 0, 0, 0)";
 }
+
+// Process messages from the parent
+window.onmessage = function(e) {
+    let data = e.data;
+    if (data.cmd == 'play') vid.play();
+    if (data.cmd == 'pause') vid.pause();
+    if (data.cmd == 'time') vid.currentTime = data.time;
+};
