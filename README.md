@@ -42,7 +42,8 @@ This repository is a template, so it's easy to clone it for yourself if you want
 * `autoplay`: The video will automatically play on load
 * `start=t`: The video will move to `t` seconds on load
 * `script=url`: An external Javascript file to include when loading the page, where `url` is an absolute URL to a Javascript file
-* `noBackground`: The page background will be transparent, so if the player is embedded at an aspect ratio not matching that of the video, the parent site's background will show through instead of just being black.
+* `noBackground`: Makes the page background transparent, so if the player is embedded at an aspect ratio not matching that of the video, the parent site's background will show through instead of just being black.
+* `noDownload`: Removes the Download context menu option
 
 ## Changelog
 ### 1.2.0 - 2021-10-31

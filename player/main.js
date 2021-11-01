@@ -500,7 +500,8 @@ document.addEventListener("contextmenu", function(e) {
     try {
         hideDropdown('speed');
     } catch (error) {}
-    showDropdown('main', [{
+    let data = [];
+    data.push({
         'disabled': !window.vidCanPlay,
         'type': 'item',
         'id': 'loop',
@@ -513,21 +514,24 @@ document.addEventListener("contextmenu", function(e) {
             if (vid.loop) vid.loop = false;
             else vid.loop = true;
         }
-    }, {
+    });
+    data.push({
         'disabled': !window.vidCanPlay,
         'type': 'item',
         'id': 'backward',
         'text': 'Jump backward 10s',
         'icon': 'replay_10',
         'action': () => { _id('backward').click(); }
-    }, {
+    });
+    data.push({
         'disabled': !window.vidCanPlay,
         'type': 'item',
         'id': 'forward',
         'text': 'Jump forward 10s',
         'icon': 'forward_10',
         'action': () => { _id('forward').click(); }
-    }, {
+    });
+    data.push({
         'disabled': !window.vidCanPlay,
         'type': 'item',
         'id': 'speed',
@@ -576,39 +580,41 @@ document.addEventListener("contextmenu", function(e) {
             });
             _id(`dropdown-speed-${Math.round(vid.playbackRate*100)}-icon`).style.opacity = 1;
         }
-    }, {
-        'type': 'sep'
-    }, {
+    });
+    data.push({'type': 'sep'});
+    data.push({
         'disabled': true,
         'type': 'item',
         'id': 'cast',
         'text': 'Cast...',
         'icon': 'cast'
-    }, {
-        'type': 'sep'
-    }, {
+    });
+    data.push({'type': 'sep'});
+    data.push({
         'disabled': !window.vidCanPlay,
         'type': 'item',
         'id': 'open',
         'text': 'Open player in new tab...',
         'icon': 'open_in_new',
         'action': () => { window.open(`${window.location.href}&start=${vid.currentTime}`, '_blank'); }
-    }, {
+    });
+    if ($_GET('noDownload') === null) data.push({
         'disabled': !window.vidCanPlay,
         'type': 'item',
         'id': 'download',
         'text': 'Download video',
         'icon': 'download',
         'action': () => { window.open(vid.src, '_blank'); }
-    }, {
-        'type': 'sep'
-    }, {
+    });
+    data.push({'type': 'sep'});
+    data.push({
         'type': 'item',
         'id': 'about',
         'text': 'CyberVideoPlayer...',
         'icon': 'public',
         'action': () => { window.open("https://github.com/CyberGen49/CyberVideoPlayer", '_blank'); }
-    }])
+    });
+    showDropdown('main', data);
 }, false)
 
 // Save the cursor's current position so we can reference it elsewhere
