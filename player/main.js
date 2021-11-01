@@ -1,4 +1,6 @@
 
+var isIframe = (window.location !== window.parent.location);
+
 // Shorthand function for document.getElementById()
 function _id(id) {
     return document.getElementById(id);
@@ -366,14 +368,20 @@ document.onfullscreenchange = function() {
 }
 
 // Handle jumping back and forward in time
+var vidJumpState;
 _id('backward').addEventListener('click', function() {
+    window.vidJumpState = vid.playing;
+    vid.pause();
     _id('progressTime').innerHTML = secondsFormat(vid.currentTime-10);
     vid.currentTime = (vid.currentTime-10);
     showBigIndicator('replay_10');
     if (mediaQuery("(pointer: coarse)"))
         showBigIndicator('replay_10', false, 'bigIndicatorSmLeft');
+    if (vidJumpState) vid.play();
 });
 _id('forward').addEventListener('click', function() {
+    window.vidJumpState = vid.playing;
+    vid.pause();
     _id('progressTime').innerHTML = secondsFormat(vid.currentTime+10);
     vid.currentTime = (vid.currentTime+10);
     if (vid.currentTime == vid.duration)
@@ -381,6 +389,7 @@ _id('forward').addEventListener('click', function() {
     showBigIndicator('forward_10');
     if (mediaQuery("(pointer: coarse)"))
         showBigIndicator('forward_10', false, 'bigIndicatorSmRight');
+    if (vidJumpState) vid.play();
 });
 
 // Handle the progress slider
@@ -596,8 +605,8 @@ document.addEventListener("contextmenu", function(e) {
         'text': 'Cast...',
         'icon': 'cast'
     });
-    data.push({'type': 'sep'});
-    data.push({
+    if (isIframe || $_GET('noDownload') === null) data.push({'type': 'sep'});
+    if (isIframe) data.push({
         'type': 'item',
         'id': 'open',
         'text': 'Open player in new tab...',
