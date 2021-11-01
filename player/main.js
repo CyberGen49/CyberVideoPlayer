@@ -321,14 +321,13 @@ vid.addEventListener('error', function() {
     _id('playPauseBig').innerHTML = 'videocam_off';
     _id('loadingSpinner').style.opacity = 0;
     window.top.postMessage({'failed': true}, '*');
+    resetControlTimeout();
 });
 
 // Handle play/pause buttons
 _id('playPause').addEventListener('click', function() {
-    if (!window.controlsVisible) {
-        resetControlTimeout();
-        return;
-    }
+    resetControlTimeout();
+    if (!window.controlsVisible) return;
     togglePlayPause();
 });
 _id('playPauseHitArea').addEventListener('click', function() {
@@ -343,20 +342,15 @@ _id('playPauseBig').addEventListener('click', function(e) {
 
 // Handle the volume button
 _id('volume').addEventListener('click', function() {
-    if (!window.controlsVisible) {
-        resetControlTimeout();
-        return;
-    }
+    resetControlTimeout();
+    if (!window.controlsVisible) return;
     toggleMute();
 });
 
 // Handle toggling fullscreen
 _id('fullscreen').addEventListener('click', function() {
-    if (!window.controlsVisible) {
-        resetControlTimeout();
-        console.log('t');
-        return;
-    }
+    resetControlTimeout();
+    if (!window.controlsVisible) return;
     if (document.fullscreenElement !== null)
         document.exitFullscreen();
     else
@@ -372,18 +366,16 @@ document.onfullscreenchange = function() {
 // Handle jumping back and forward in time
 var vidJumpState;
 _id('backward').addEventListener('click', function() {
+    resetControlTimeout();
     window.vidJumpState = vid.playing;
     _id('progressTime').innerHTML = secondsFormat(vid.currentTime-10);
     vid.currentTime = (vid.currentTime-10);
     showBigIndicator('replay_10');
     if (mediaQuery("(pointer: coarse)"))
         showBigIndicator('replay_10', false, 'bigIndicatorSmLeft');
-    setTimeout(() => {
-        vid.pause();
-        if (vidJumpState) vid.play();
-    }, 100);
 });
 _id('forward').addEventListener('click', function() {
+    resetControlTimeout();
     window.vidJumpState = vid.playing;
     _id('progressTime').innerHTML = secondsFormat(vid.currentTime+10);
     vid.currentTime = (vid.currentTime+10);
@@ -392,45 +384,33 @@ _id('forward').addEventListener('click', function() {
     showBigIndicator('forward_10');
     if (mediaQuery("(pointer: coarse)"))
         showBigIndicator('forward_10', false, 'bigIndicatorSmRight');
-    setTimeout(() => {
-        vid.pause();
-        if (vidJumpState) vid.play();
-    }, 100);
 });
 
 // Handle the progress slider
 var vidScrubbing = false;
 var vidScrubbingState;
 _id('progressSliderInner').addEventListener('mousedown', function() {
-    if (!window.controlsVisible) {
-        resetControlTimeout();
-        return;
-    }
+    resetControlTimeout();
+    if (!window.controlsVisible) return;
     vidScrubbingState = vid.playing;
     window.vidScrubbing = true;
-    vid.pause();
     console.log("Video scrubbing started");
 });
 _id('progressSliderInner').addEventListener('input', function() {
-    if (!window.controlsVisible) {
-        resetControlTimeout();
-        return;
-    }
+    resetControlTimeout();
+    if (!window.controlsVisible) return;
     vid.currentTime = this.value;
     _id('progressTime').innerHTML = secondsFormat(this.value);
     _id('progressFakeFront').style.width = `${(Math.round(this.value)/Math.ceil(vid.duration))*100}%`;
     vid.pause();
 });
 _id('progressSliderInner').addEventListener('mouseup', function() {
-    if (!window.controlsVisible) {
-        resetControlTimeout();
-        return;
-    }
+    resetControlTimeout();
+    if (!window.controlsVisible) return;
     window.vidScrubbing = false;
     setTimeout(() => {
-        vid.pause();
         if (vidScrubbingState) vid.play();
-    }, 100);
+    }, 500);
     console.log("Video scrubbing finished");
 });
 _id('controlBar').addEventListener('mousemove', function() {
