@@ -283,6 +283,7 @@ vid.addEventListener('canplay', function() {
         window.started = true;
     }
     if ($_GET('autoplay') !== null) vid.play();
+    _id('loadingSpinner').style.opacity = 0;
 });
 // Do this stuff when the video's duration changes
 vid.addEventListener('durationchange', function() {
@@ -290,7 +291,6 @@ vid.addEventListener('durationchange', function() {
     _id('progressSliderInner').max = Math.ceil(vid.duration);
     window.top.postMessage({'duration': vid.duration}, '*');
     window.vidCanPlay = true;
-    _id('loadingSpinner').style.opacity = 0;
 });
 // Do this stuff when the video's progress changes
 vid.addEventListener('timeupdate', function() {
@@ -378,8 +378,10 @@ _id('backward').addEventListener('click', function() {
     showBigIndicator('replay_10');
     if (mediaQuery("(pointer: coarse)"))
         showBigIndicator('replay_10', false, 'bigIndicatorSmLeft');
-    vid.pause();
-    if (vidJumpState) vid.play();
+    setTimeout(() => {
+        vid.pause();
+        if (vidJumpState) vid.play();
+    }, 100);
 });
 _id('forward').addEventListener('click', function() {
     window.vidJumpState = vid.playing;
@@ -390,8 +392,10 @@ _id('forward').addEventListener('click', function() {
     showBigIndicator('forward_10');
     if (mediaQuery("(pointer: coarse)"))
         showBigIndicator('forward_10', false, 'bigIndicatorSmRight');
-    vid.pause();
-    if (vidJumpState) vid.play();
+    setTimeout(() => {
+        vid.pause();
+        if (vidJumpState) vid.play();
+    }, 100);
 });
 
 // Handle the progress slider
@@ -423,8 +427,10 @@ _id('progressSliderInner').addEventListener('mouseup', function() {
         return;
     }
     window.vidScrubbing = false;
-    vid.pause();
-    if (vidScrubbingState) vid.play();
+    setTimeout(() => {
+        vid.pause();
+        if (vidScrubbingState) vid.play();
+    }, 100);
     console.log("Video scrubbing finished");
 });
 _id('controlBar').addEventListener('mousemove', function() {
