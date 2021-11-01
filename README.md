@@ -35,6 +35,8 @@ You can replace `cybergen49.github.io/CyberVideoPlayer` with `vid.simplecyber.or
 This repository is a template, so it's easy to clone it for yourself if you want to make changes or use your own domain.
 
 ## Query String Parameters
+These parameters control various aspects of the player. Pass them after the main URL and a question mark (?), and separate each parameter with an ampersand (&). Parameters without an equal sign don't need a value.
+
 ### Required
 * `src=url`: The video file to play, where `url` is a base64-encoded absolute (not relative) video URL
 
