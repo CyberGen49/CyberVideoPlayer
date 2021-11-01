@@ -263,6 +263,16 @@ video {
     #controlBar { bottom: 15px; }
 
     #progressSlider { opacity: 1; }
+
+    .dropdownItem {
+        padding: 10px 14px;
+    }
+    .dropdownItemIcon {
+        font-size: 26px;
+    }
+    .dropdownItemName {
+        font-size: 17px;
+    }
 }
 
 @media only screen and (hover: hover) {
