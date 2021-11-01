@@ -24,7 +24,7 @@ Embedding the player on your site:
 <!-- `width` and `height` can be changed here to suit your needs, or removed entirely to style with CSS -->
 <!-- Be sure to replace `src` with your own link -->
 <iframe src="https://cybergen49.github.io/CyberVideoPlayer/player/?src=aHR0cDovL2NvbW1vbmRhdGFzdG9yYWdlLmdvb2dsZWFwaXMuY29tL2d0di12aWRlb3MtYnVja2V0L3NhbXBsZS9CaWdCdWNrQnVubnkubXA0&autoplay"
-        allowfullscreen
+        allow="autoplay; fullscreen"
         frameborder=0
         width=640
         height=480
