@@ -648,6 +648,7 @@ var dynamicButtonInterval = setInterval(() => {
         window.top.postMessage({'status': 'finished'}, '*');
         _id('playPause').innerHTML = 'replay';
         _id('playPauseBig').innerHTML = 'replay';
+        resetControlTimeout();
     } else {
         window.top.postMessage({'status': 'paused'}, '*');
         _id('playPause').innerHTML = 'play_arrow';
