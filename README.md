@@ -93,6 +93,7 @@ player.contentWindow.postMessage(msg, '*');
 * Fixed showing all buffer points in the progress bar
 * Added a loading spinner to indicate buffering
 * Added the ability to access some video data from the parent site (when embedding)
+* Added the ability to send commands to the player from the parent site
 
 ### 1.1.0 - 2021-10-30
 * Further refinement

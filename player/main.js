@@ -373,17 +373,16 @@ document.onfullscreenchange = function() {
 var vidJumpState;
 _id('backward').addEventListener('click', function() {
     window.vidJumpState = vid.playing;
-    vid.pause();
     _id('progressTime').innerHTML = secondsFormat(vid.currentTime-10);
     vid.currentTime = (vid.currentTime-10);
     showBigIndicator('replay_10');
     if (mediaQuery("(pointer: coarse)"))
         showBigIndicator('replay_10', false, 'bigIndicatorSmLeft');
+    vid.pause();
     if (vidJumpState) vid.play();
 });
 _id('forward').addEventListener('click', function() {
     window.vidJumpState = vid.playing;
-    vid.pause();
     _id('progressTime').innerHTML = secondsFormat(vid.currentTime+10);
     vid.currentTime = (vid.currentTime+10);
     if (vid.currentTime == vid.duration)
@@ -391,6 +390,7 @@ _id('forward').addEventListener('click', function() {
     showBigIndicator('forward_10');
     if (mediaQuery("(pointer: coarse)"))
         showBigIndicator('forward_10', false, 'bigIndicatorSmRight');
+    vid.pause();
     if (vidJumpState) vid.play();
 });
 
@@ -405,6 +405,7 @@ _id('progressSliderInner').addEventListener('mousedown', function() {
     vidScrubbingState = vid.playing;
     window.vidScrubbing = true;
     vid.pause();
+    console.log("Video scrubbing started");
 });
 _id('progressSliderInner').addEventListener('input', function() {
     if (!window.controlsVisible) {
@@ -414,6 +415,7 @@ _id('progressSliderInner').addEventListener('input', function() {
     vid.currentTime = this.value;
     _id('progressTime').innerHTML = secondsFormat(this.value);
     _id('progressFakeFront').style.width = `${(Math.round(this.value)/Math.ceil(vid.duration))*100}%`;
+    vid.pause();
 });
 _id('progressSliderInner').addEventListener('mouseup', function() {
     if (!window.controlsVisible) {
@@ -421,7 +423,9 @@ _id('progressSliderInner').addEventListener('mouseup', function() {
         return;
     }
     window.vidScrubbing = false;
+    vid.pause();
     if (vidScrubbingState) vid.play();
+    console.log("Video scrubbing finished");
 });
 _id('controlBar').addEventListener('mousemove', function() {
     resetControlTimeout();
