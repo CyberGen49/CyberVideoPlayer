@@ -145,7 +145,7 @@ video {
     height: 80px;
     font-size: 50px;
 }
-.bigButton:active {
+.bigButton:active:not(.disabled) {
     background: rgba(80, 80, 80, 0.7)
 }
 
@@ -290,9 +290,6 @@ video {
 @media only screen and (hover: none) {
     .controlsButton:active {
         background: rgba(255, 255, 255, 0.2);
-    }
-    #progressSlider:active {
-        opacity: 1;
     }
 }
 

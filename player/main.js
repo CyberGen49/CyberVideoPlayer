@@ -286,6 +286,7 @@ vid.addEventListener('canplay', function() {
 vid.addEventListener('durationchange', function() {
     _id('duration').innerHTML = secondsFormat(vid.duration);
     _id('progressSliderInner').max = Math.ceil(vid.duration);
+    window.top.postMessage({'duration': vid.duration}, '*');
 });
 // Do this stuff when the video's progress changes
 vid.addEventListener('timeupdate', function() {
@@ -294,6 +295,7 @@ vid.addEventListener('timeupdate', function() {
         _id('progressFakeFront').style.width = `${(Math.ceil(vid.currentTime)/Math.ceil(vid.duration))*100}%`;
         _id('progressSliderInner').value = Math.ceil(vid.currentTime);
     }
+    window.top.postMessage({'time': vid.currentTime}, '*');
 });
 // Do this stuff when the video buffers more data
 vid.addEventListener('progress', function() {
@@ -312,6 +314,9 @@ vid.addEventListener('progress', function() {
 vid.addEventListener('error', function() {
     window.vidCanPlay = false;
     showBigIndicator('videocam_off', true);
+    _id('playPauseBig').innerHTML = 'videocam_off';
+    _id('loadingSpinner').style.opacity = 0;
+    window.top.postMessage({'failed': true}, '*');
 });
 
 // Handle play/pause buttons
@@ -460,11 +465,13 @@ function checkBuffering() {
     if (!bufferingDetected && currentPlayPos < (lastPlayPos + offset) && !vid.paused) {
         _id('loadingSpinner').style.opacity = 1;
         bufferingDetected = true;
+        window.top.postMessage({'status': 'buffering'}, '*');
     }
     
     if (bufferingDetected && currentPlayPos > (lastPlayPos + offset) && !vid.paused) {
         _id('loadingSpinner').style.opacity = 0;
         bufferingDetected = false;
+        window.top.postMessage({'status': 'playing'}, '*');
     }
     lastPlayPos = currentPlayPos;
 }
@@ -591,7 +598,6 @@ document.addEventListener("contextmenu", function(e) {
     });
     data.push({'type': 'sep'});
     data.push({
-        'disabled': !window.vidCanPlay,
         'type': 'item',
         'id': 'open',
         'text': 'Open player in new tab...',
@@ -626,12 +632,15 @@ window.addEventListener("mousemove", function(event) {
 // Handle dynamically updating button icons
 var dynamicButtonInterval = setInterval(() => {
     if (vid.playing) {
+        window.top.postMessage({'status': 'playing'}, '*');
         _id('playPause').innerHTML = 'pause';
         _id('playPauseBig').innerHTML = 'pause';
     } else if (vid.ended) {
+        window.top.postMessage({'status': 'finished'}, '*');
         _id('playPause').innerHTML = 'replay';
         _id('playPauseBig').innerHTML = 'replay';
     } else {
+        window.top.postMessage({'status': 'paused'}, '*');
         _id('playPause').innerHTML = 'play_arrow';
         _id('playPauseBig').innerHTML = 'play_arrow';
     }
@@ -653,7 +662,11 @@ if ($_GET('src')) {
         var vidCanPlay = false;
     }
 }
-if (!vidCanPlay) showBigIndicator('block', true);
+if (!vidCanPlay) {
+    showBigIndicator('block', true);
+    _id('playPauseBig').innerHTML = 'block';
+    window.top.postMessage({'failed': true}, '*');
+}
 
 // Handle loading a custom script
 if ($_GET('script')) {
