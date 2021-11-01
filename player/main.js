@@ -364,10 +364,8 @@ document.onfullscreenchange = function() {
 }
 
 // Handle jumping back and forward in time
-var vidJumpState;
 _id('backward').addEventListener('click', function() {
     resetControlTimeout();
-    window.vidJumpState = vid.playing;
     _id('progressTime').innerHTML = secondsFormat(vid.currentTime-10);
     vid.currentTime = (vid.currentTime-10);
     showBigIndicator('replay_10');
@@ -376,7 +374,6 @@ _id('backward').addEventListener('click', function() {
 });
 _id('forward').addEventListener('click', function() {
     resetControlTimeout();
-    window.vidJumpState = vid.playing;
     _id('progressTime').innerHTML = secondsFormat(vid.currentTime+10);
     vid.currentTime = (vid.currentTime+10);
     if (vid.currentTime == vid.duration)
@@ -402,15 +399,11 @@ _id('progressSliderInner').addEventListener('input', function() {
     vid.currentTime = this.value;
     _id('progressTime').innerHTML = secondsFormat(this.value);
     _id('progressFakeFront').style.width = `${(Math.round(this.value)/Math.ceil(vid.duration))*100}%`;
-    vid.pause();
 });
 _id('progressSliderInner').addEventListener('mouseup', function() {
     resetControlTimeout();
     if (!window.controlsVisible) return;
     window.vidScrubbing = false;
-    setTimeout(() => {
-        if (vidScrubbingState) vid.play();
-    }, 500);
     console.log("Video scrubbing finished");
 });
 _id('controlBar').addEventListener('mousemove', function() {
@@ -436,6 +429,7 @@ var mobJump = {
     'right': 0
 }
 _id('mobHitLeft').addEventListener('click', function(e) {
+    resetControlTimeout();
     if ((Date.now()-window.mobJump.left) < 400) {
         e.preventDefault();
         _id('backward').click();
@@ -444,6 +438,7 @@ _id('mobHitLeft').addEventListener('click', function(e) {
     window.mobJump.right = 0;
 });
 _id('mobHitRight').addEventListener('click', function(e) {
+    resetControlTimeout();
     if ((Date.now()-window.mobJump.right) < 400) {
         e.preventDefault();
         _id('forward').click();
