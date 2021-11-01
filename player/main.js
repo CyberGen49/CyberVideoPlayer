@@ -289,6 +289,8 @@ vid.addEventListener('durationchange', function() {
     _id('duration').innerHTML = secondsFormat(vid.duration);
     _id('progressSliderInner').max = Math.ceil(vid.duration);
     window.top.postMessage({'duration': vid.duration}, '*');
+    window.vidCanPlay = true;
+    _id('loadingSpinner').style.opacity = 0;
 });
 // Do this stuff when the video's progress changes
 vid.addEventListener('timeupdate', function() {
@@ -665,17 +667,13 @@ var dynamicButtonInterval = setInterval(() => {
 // Handle loading the video file
 var vidCanPlay = false;
 if ($_GET('src')) {
-    vidCanPlay = true;
     try {
         vid.src = atob($_GET('src')).replace('"', '');
     } catch (error) {
-        var vidCanPlay = false;
+        showBigIndicator('block', true);
+        _id('playPauseBig').innerHTML = 'block';
+        window.top.postMessage({'failed': true}, '*');
     }
-}
-if (!vidCanPlay) {
-    showBigIndicator('block', true);
-    _id('playPauseBig').innerHTML = 'block';
-    window.top.postMessage({'failed': true}, '*');
 }
 
 // Handle loading a custom script
