@@ -5,6 +5,10 @@
     font-family: 'Segoe UI', 'Open Sans', 'Roboto', sans-serif;
 }
 
+body {
+    background: #000;
+}
+
 #main {
     top: 0px;
     left: 0px;
@@ -12,7 +16,6 @@
     height: 100%;
     display: flex;
     position: absolute;
-    background: #000;
 }
 
 #vidContainer {
@@ -95,7 +98,8 @@ video {
     height: 100%;
 }
 
-#bigIndicators {
+#bigIndicators,
+#loadingSpinner {
     position: absolute;
     top: 0px;
     left: 0px;
@@ -106,19 +110,29 @@ video {
 }
 
 #controlsMobile,
-#bigIndicators {
+#bigIndicators,
+#loadingSpinner {
     padding-bottom: 60px;
 }
 
-.bigButton,
-#bigIndicator {
+#loadingSpinner {
+    transition: 0.2s ease-in-out;
+}
+
+#spinnerInner {
     margin: auto;
-    width: 140px;
-    height: 140px;
+}
+
+.bigButton,
+#bigIndicator,
+.bigIndicatorSm {
+    margin: auto;
+    width: 120px;
+    height: 120px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 90px;
+    font-size: 80px;
     color: #fff;
     background: rgba(50, 50, 50, 0.7);
     backdrop-filter: blur(10px);
@@ -127,12 +141,20 @@ video {
     transition: 0.1s ease-in-out;
 }
 .bigButton {
-    width: 100px;
-    height: 100px;
-    font-size: 60px;
+    width: 80px;
+    height: 80px;
+    font-size: 50px;
 }
 .bigButton:active {
     background: rgba(80, 80, 80, 0.7)
+}
+
+.bigIndicatorSm {
+    width: 60px;
+    height: 60px;
+    font-size: 40px;
+    margin: initial;
+    margin-top: 5px;
 }
 
 #progressSlider {
@@ -158,21 +180,89 @@ video {
     cursor: default;
 }
 
+.dropdownHitArea {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    z-index: 30;
+}
+
+.dropdown {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    max-width: 300px;
+    margin: 10px;
+    background: rgba(50, 50, 50, 0.7);
+    backdrop-filter: blur(10px);
+    padding: 8px 0px;
+    border-radius: 8px;
+    box-shadow: 0px 3px 15px 0px rgba(0,0,0,0.3);
+    z-index: 1000;
+    user-select: none;
+    overflow-y: scroll;
+    scrollbar-width: none;
+}
+
+.dropdown::-webkit-scrollbar {
+    width: 0px;
+}
+
+.dropdownItem {
+    padding: 6px 12px;
+    width: 100%;
+}
+.dropdownItem:active:not(.disabled) {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.dropdownItem.disabled {
+    opacity: 50%;
+}
+
+.dropdownItemIcon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: "Material Icons Outlined";
+    font-size: 24px;
+    color: #fff;
+}
+
+.dropdownItemName {
+    margin-left: 12px;
+    margin-right: 6px;
+    margin-top: 3px;
+    font-size: 15px;
+    color: #fff;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.dropdownSep {
+    width: 100%;
+    height: 1px;
+    margin: 5px 0px;
+    background: rgba(255, 255, 255, 0.2);
+}
+
 .touch {
     display: none;
 }
 
 @media only screen and (pointer: coarse) {
-    #progressTime {
-        padding-left: 15px;
-    }
+    #progressTime { padding-left: 15px; }
 
-    .touch {
-        display: inherit !important;
-    }
-    .pointer {
-        display: none !important;
-    }
+    .touch { display: inherit !important; }
+    .pointer { display: none !important; }
+
+    #controlBar { bottom: 15px; }
+
+    #progressSlider { opacity: 1; }
 }
 
 @media only screen and (hover: hover) {
@@ -182,6 +272,9 @@ video {
     #progressSlider:hover {
         opacity: 1;
     }
+    .dropdownItem:hover:not(:active):not(.disabled) {
+        background: rgba(255, 255, 255, 0.1);
+    }
 }
 
 @media only screen and (hover: none) {
@@ -190,5 +283,63 @@ video {
     }
     #progressSlider:active {
         opacity: 1;
+    }
+}
+
+.ease-in-out-100ms {
+    transition: 0.1s ease-in-out;
+}
+
+/*
+
+** Material Design Spinner **
+
+<div class="mdSpinner">
+    <svg viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="20" />
+    </svg>
+</div>
+
+*/
+
+.mdSpinner {
+    width: 230px;
+    height: 230px;
+    margin: 0 auto;
+}
+.mdSpinner svg {
+    animation: mdSpin-rotate 1.2s linear infinite;
+    height: 100%;
+    width: 100%;
+    filter: drop-shadow(0px 0px 30px rgba(0, 0, 0, 0.9));
+}
+.mdSpinner circle {
+    stroke-dasharray: 1,200;
+    stroke-dashoffset: 0;
+    animation: mdSpin-dash 1.2s ease-in-out infinite 0s;
+    stroke-linecap: round;
+    fill: none;
+    stroke: #fff;
+    stroke-width: 3;
+}
+
+@keyframes mdSpin-rotate {
+    100% {
+        -webkit-transform: rotate(360deg);
+                transform: rotate(360deg);
+    }
+}
+@keyframes mdSpin-dash {
+    0% {
+        stroke-dasharray: 1,200;
+        stroke-dashoffset: 0;
+    }
+    50% {
+        stroke-dasharray: 89,200;
+        stroke-dashoffset: -35;
+    }
+    100% {
+        stroke-dasharray: 89,200;
+        stroke-dashoffset: -124;
     }
 }

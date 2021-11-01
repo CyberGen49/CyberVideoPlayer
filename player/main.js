@@ -29,6 +29,31 @@ function secondsFormat(secs) {
     }
 }
 
+// Get element coordinates and dimensions
+function _getX(id) {
+    return document.getElementById(id).getBoundingClientRect().x;
+}
+function _getY(id) {
+    return document.getElementById(id).getBoundingClientRect().y;
+}
+function _getX2(id) {
+    return document.getElementById(id).getBoundingClientRect().right;
+}
+function _getY2(id) {
+    return document.getElementById(id).getBoundingClientRect().bottom;
+}
+function _getW(id) {
+    return document.getElementById(id).getBoundingClientRect().width;
+}
+function _getH(id) {
+    return document.getElementById(id).getBoundingClientRect().height;
+}
+
+// Returns the value of a CSS media query
+function mediaQuery(query) {
+    return window.matchMedia(query).matches;
+}
+
 // Get a query string parameter
 function $_GET(name, url = window.location.href) {
     name = name.replace(/[\[\]]/g, '\\$&');
@@ -42,6 +67,126 @@ function $_GET(name, url = window.location.href) {
         console.log(`Failed to decode "${results[2]}"`);
         return null;
     }
+}
+
+// Show a dropdown menu
+var timeoutShowDropdown = [];
+var timeoutHideDropdown = [];
+var dropdownVisible = false;
+function showDropdown(id, data, anchorId = null) {
+    resetControlTimeout()
+    // Create the dropdown element
+    if (!_id(`dropdown-${id}`)) {
+        _id("body").insertAdjacentHTML('beforeend', `
+            <div id="dropdownArea-${id}" class="dropdownHitArea" style="display: none;"></div>
+            <div id="dropdown-${id}" class="dropdown" style="display: none; opacity: 0">
+        `);
+        _id(`dropdownArea-${id}`).addEventListener("click", function() { hideDropdown(id) });
+        _id(`dropdownArea-${id}`).addEventListener("contextmenu", function(e) { e.preventDefault(); });
+    }
+    // Set initial element properties
+    _id(`dropdownArea-${id}`).style.display = "none";
+    _id(`dropdown-${id}`).classList.remove("ease-in-out-100ms");
+    _id(`dropdown-${id}`).style.display = "none";
+    _id(`dropdown-${id}`).style.opacity = 0;
+    _id(`dropdown-${id}`).style.marginTop = "5px";
+    _id(`dropdown-${id}`).style.height = "";
+    _id(`dropdown-${id}`).style.top = -1000;
+    _id(`dropdown-${id}`).style.left = -1000;
+    _id(`dropdown-${id}`).innerHTML = "";
+    // Add items to the dropdown
+    data.forEach(item => {
+        switch (item.type) {
+            case 'header':
+                _id(`dropdown-${id}`).insertAdjacentHTML('beforeend', `
+                    <div class="dropdownHeader">${item.text}</div>
+                `);
+                break;
+            case 'item':
+                _id(`dropdown-${id}`).insertAdjacentHTML('beforeend', `
+                    <div id="dropdown-${id}-${item.id}" class="dropdownItem row no-gutters">
+                        <div id="dropdown-${id}-${item.id}-icon" class="col-auto dropdownItemIcon material-icons">${item.icon}</div>
+                        <div class="col dropdownItemName">${item.text}</div>
+                    </div>
+                `);
+                if (item.disabled) {
+                    _id(`dropdown-${id}-${item.id}`).classList.add("disabled");
+                } else {
+                    _id(`dropdown-${id}-${item.id}`).addEventListener("click", item.action);
+                    _id(`dropdown-${id}-${item.id}`).addEventListener("click", function() { hideDropdown(id) });
+                }
+                break;
+            case 'sep':
+                _id(`dropdown-${id}`).insertAdjacentHTML('beforeend', `
+                    <div class="dropdownSep"></div>
+                `);
+                break;
+        }
+    });
+    // Show the dropdown
+    console.log(`Showing dropdown "${id}"`);
+    _id(`dropdownArea-${id}`).style.display = "block";
+    _id(`dropdown-${id}`).style.display = "block";
+    // Position the dropdown
+    let windowW = window.innerWidth;
+    let windowH = window.innerHeight;
+    let elW = _getW(`dropdown-${id}`);
+    let elH = _getH(`dropdown-${id}`);
+    let anchorX = window.mouseX;
+    let anchorY = window.mouseY;
+    if (anchorId !== null) {
+        anchorX = _getX(anchorId);
+        anchorY = _getY(anchorId);
+    }
+    // Adaptive X
+    if (windowW <= elW) anchorX = 0;
+    else if ((anchorX+elW) > (windowW-25)) {
+        anchorX = (anchorX-((anchorX+elW)-(windowW-25)));
+    }
+    // Adaptive Y
+    if (anchorX < 0) anchorX = 0;
+    if (windowH <= elH) anchorY = 0;
+    else if ((anchorY+elH) > (windowH-25)) {
+        anchorY = (anchorY-((anchorY+elH)-(windowH-25)));
+    }
+    if (anchorY < 0) anchorY = 0;
+    // Set CSS
+    _id(`dropdown-${id}`).style.top = `${anchorY}px`;
+    _id(`dropdown-${id}`).style.left = `${anchorX}px`;
+    console.log(`${elW} - ${elH} -- ${(windowW-anchorX)}`);
+    // Check for height and scrolling
+    let elY = _getY(`dropdown-${id}`);
+    if ((elY+elH) > windowH-20) {
+        _id(`dropdown-${id}`).style.height = `calc(100% - ${elY}px - 20px)`;
+    } else {
+        _id(`dropdown-${id}`).style.height = "";
+    }
+    try {
+        clearTimeout(window.timeoutShowDropdown[id]);
+    } catch (error) {}
+    window.timeoutShowDropdown[id] = setTimeout(() => {
+        _id(`dropdown-${id}`).classList.add("ease-in-out-100ms");
+        _id(`dropdown-${id}`).style.opacity = 1;
+        _id(`dropdown-${id}`).style.marginTop = "10px";
+        window.dropdownVisible = true;
+    }, 50);
+    return `dropdown-${id}`;
+}
+
+// Hide an existing dropdown
+function hideDropdown(id) {
+    resetControlTimeout()
+    console.log(`Hiding dropdown "${id}"`);
+    _id(`dropdownArea-${id}`).style.display = "none";
+    _id(`dropdown-${id}`).style.marginTop = "15px";
+    _id(`dropdown-${id}`).style.opacity = 0;
+    window.dropdownVisible = false;
+    try {
+        clearTimeout(window.timeoutHideDropdown[id]);
+    } catch (error) {}
+    window.timeoutHideDropdown[id] = setTimeout(() => {
+        _id(`dropdown-${id}`).style.display = "none";
+    }, 200);
 }
 
 // Get the video object
@@ -85,19 +230,19 @@ const toggleMute = function() {
 
 // Flashes a big centered icon
 var bigIndicatorTimeout;
-const showBigIndicator = function(icon, persist = false) {
+const showBigIndicator = function(icon, persist = false, id = 'bigIndicator') {
     if (!persist && !window.vidCanPlay) return;
     clearTimeout(window.bigIndicatorTimeout);
-    _id('bigIndicator').innerHTML = icon;
-    _id('bigIndicator').style.opacity = 0;
-    _id('bigIndicator').style.display = "";
+    _id(id).innerHTML = icon;
+    _id(id).style.opacity = 0;
+    _id(id).style.display = "";
     window.bigIndicatorTimeout = setTimeout(() => {
-        _id('bigIndicator').style.opacity = 1;
+        _id(id).style.opacity = 1;
         if (!persist) {
             window.bigIndicatorTimeout = setTimeout(() => {
-                _id('bigIndicator').style.opacity = 0;
+                _id(id).style.opacity = 0;
                 window.bigIndicatorTimeout = setTimeout(() => {
-                    _id('bigIndicator').style.display = "none";
+                    _id(id).style.display = "none";
                 }, 300);
             }, 300);
         }
@@ -111,23 +256,30 @@ const resetControlTimeout = function(timeout = 3000) {
     clearTimeout(controlsTimeout);
     _id('body').style.cursor = 'initial';
     _id('controls').classList.add('visible');
-    // This small timeout makes sure other functions have time to react to controls not being visible before they're marked as visible
+    _id('loadingSpinner').style.paddingBottom = '';
+    // This small timeout makes sure other functions have time to react
+    // to controls not being visible before they're marked as visible
     setTimeout(() => {
         window.controlsVisible = true;
     }, 50);
     window.controlsTimeout = setTimeout(() => {
-        if (vid.playing) {
+        if (vid.playing && !window.dropdownVisible) {
             _id('body').style.cursor = 'none';
             _id('controls').classList.remove('visible');
+            _id('loadingSpinner').style.paddingBottom = '0px';
             window.controlsVisible = false;
         }
     }, timeout);
 }
 
 // Do this stuff when the video can start playing
+var started = false;
 vid.addEventListener('canplay', function() {
     document.title = decodeURIComponent(vid.src.substring(vid.src.lastIndexOf('/')+1));
-    if ($_GET('start') > 0) vid.currentTime = $_GET('start');
+    if ($_GET('start') > 0 && !window.started) {
+        vid.currentTime = $_GET('start');
+        window.started = true;
+    }
     if ($_GET('autoplay') !== null) vid.play();
 });
 // Do this stuff when the video's duration changes
@@ -139,22 +291,22 @@ vid.addEventListener('durationchange', function() {
 vid.addEventListener('timeupdate', function() {
     if (!window.vidScrubbing) {
         _id('progressTime').innerHTML = secondsFormat(vid.currentTime);
-        _id('progressFakeFront').style.width = `${(Math.round(vid.currentTime)/Math.ceil(vid.duration))*100}%`;
-        _id('progressSliderInner').value = Math.round(vid.currentTime);
+        _id('progressFakeFront').style.width = `${(Math.ceil(vid.currentTime)/Math.ceil(vid.duration))*100}%`;
+        _id('progressSliderInner').value = Math.ceil(vid.currentTime);
     }
 });
 // Do this stuff when the video buffers more data
 vid.addEventListener('progress', function() {
     let ranges = vid.buffered.length;
     let duration = vid.duration;
+    let html = '';
     for (i = 0; i < ranges; i++) {
         let start = vid.buffered.start(i);
         let end = vid.buffered.end(i);
         //console.log(`Buffer ${i} starts at ${start} and ends at ${end}`);
-        let html = '';
         html += `<div class="bufferPoint" style="left: ${(start/duration)*100}%; width: ${((end-start)/duration)*100}%"></div>`;
-        _id('bufferPoints').innerHTML = html;
     }
+    _id('bufferPoints').innerHTML = html;
 });
 // Do this stuff if the video fails to load
 vid.addEventListener('error', function() {
@@ -210,13 +362,20 @@ document.onfullscreenchange = function() {
 
 // Handle jumping back and forward in time
 _id('backward').addEventListener('click', function() {
+    _id('progressTime').innerHTML = secondsFormat(vid.currentTime-10);
     vid.currentTime = (vid.currentTime-10);
     showBigIndicator('replay_10');
+    if (mediaQuery("(pointer: coarse)"))
+        showBigIndicator('replay_10', false, 'bigIndicatorSmLeft');
 });
 _id('forward').addEventListener('click', function() {
+    _id('progressTime').innerHTML = secondsFormat(vid.currentTime+10);
     vid.currentTime = (vid.currentTime+10);
-    vid.currentTime = (vid.currentTime-0.25);
+    if (vid.currentTime == vid.duration)
+        vid.currentTime = (vid.currentTime-0.25);
     showBigIndicator('forward_10');
+    if (mediaQuery("(pointer: coarse)"))
+        showBigIndicator('forward_10', false, 'bigIndicatorSmRight');
 });
 
 // Handle the progress slider
@@ -265,26 +424,197 @@ _id('controlsMobile').addEventListener('click', function() {
     }
 });
 
+// Handle jumping forward and backward on mobile with a double tap
+var mobJump = {
+    'left': 0,
+    'right': 0
+}
+_id('mobHitLeft').addEventListener('click', function(e) {
+    if ((Date.now()-window.mobJump.left) < 400) {
+        e.preventDefault();
+        _id('backward').click();
+    }
+    window.mobJump.left = Date.now();
+    window.mobJump.right = 0;
+});
+_id('mobHitRight').addEventListener('click', function(e) {
+    if ((Date.now()-window.mobJump.right) < 400) {
+        e.preventDefault();
+        _id('forward').click();
+    }
+    window.mobJump.right = Date.now();
+    window.mobJump.left = 0;
+});
+
+// Handle showing a loading spinner if the video is buffering
+// https://stackoverflow.com/questions/21399872/how-to-detect-whether-html5-video-has-paused-for-buffering
+var checkInterval = 50.0;
+var lastPlayPos = 0;
+var currentPlayPos = 0;
+var bufferingDetected = false;
+function checkBuffering() {
+    currentPlayPos = vid.currentTime;
+    
+    var offset = (checkInterval - 20) / 1000;
+    
+    if (!bufferingDetected && currentPlayPos < (lastPlayPos + offset) && !vid.paused) {
+        _id('loadingSpinner').style.opacity = 1;
+        bufferingDetected = true;
+    }
+    
+    if (bufferingDetected && currentPlayPos > (lastPlayPos + offset) && !vid.paused) {
+        _id('loadingSpinner').style.opacity = 0;
+        bufferingDetected = false;
+    }
+    lastPlayPos = currentPlayPos;
+}
+setInterval(checkBuffering, checkInterval);
+
 // Handle keyboard shortcuts
 document.addEventListener('keydown', function(event) {
     resetControlTimeout();
-    switch (event.code) {
-        case 'Space':
-            togglePlayPause();
-            break;
-        case 'ArrowLeft':
-            _id('backward').click();
-            break;
-        case 'ArrowRight':
-            _id('forward').click();
-            break;
-        case 'KeyF':
-            _id('fullscreen').click();
-            break;
-        case 'KeyM':
-            _id('volume').click();
-            break;
-    }
+    setTimeout(() => {
+        switch (event.code) {
+            case 'Space':
+                togglePlayPause();
+                break;
+            case 'ArrowLeft':
+                _id('backward').click();
+                break;
+            case 'ArrowRight':
+                _id('forward').click();
+                break;
+            case 'KeyF':
+                _id('fullscreen').click();
+                break;
+            case 'KeyM':
+                _id('volume').click();
+                break;
+        }
+    }, 50);
+});
+
+// Handle the custom context menu
+document.addEventListener("contextmenu", function(e) {
+    e.preventDefault();
+    try {
+        hideDropdown('speed');
+    } catch (error) {}
+    showDropdown('main', [{
+        'disabled': !window.vidCanPlay,
+        'type': 'item',
+        'id': 'loop',
+        'text': (() => {
+            if (vid.loop) return "Turn off loop"
+            else return "Turn on loop"
+        })(),
+        'icon': 'loop',
+        'action': () => {
+            if (vid.loop) vid.loop = false;
+            else vid.loop = true;
+        }
+    }, {
+        'disabled': !window.vidCanPlay,
+        'type': 'item',
+        'id': 'backward',
+        'text': 'Jump backward 10s',
+        'icon': 'replay_10',
+        'action': () => { _id('backward').click(); }
+    }, {
+        'disabled': !window.vidCanPlay,
+        'type': 'item',
+        'id': 'forward',
+        'text': 'Jump forward 10s',
+        'icon': 'forward_10',
+        'action': () => { _id('forward').click(); }
+    }, {
+        'disabled': !window.vidCanPlay,
+        'type': 'item',
+        'id': 'speed',
+        'text': 'Playback speed...',
+        'icon': 'speed',
+        'action': () => {
+            showDropdown('speed', [{
+                'type': 'item', 'id': '10', 'text': '0.1x', 'icon': 'check',
+                'action': () => { vid.playbackRate = 0.1; }
+            }, {
+                'type': 'item', 'id': '25', 'text': '0.25x', 'icon': 'check',
+                'action': () => { vid.playbackRate = 0.25; }
+            }, {
+                'type': 'item', 'id': '50', 'text': '0.5x', 'icon': 'check',
+                'action': () => { vid.playbackRate = 0.5; }
+            }, {
+                'type': 'item', 'id': '75', 'text': '0.75x', 'icon': 'check',
+                'action': () => { vid.playbackRate = 0.75; }
+            }, {
+                'type': 'item', 'id': '100', 'text': 'Normal', 'icon': 'check',
+                'action': () => { vid.playbackRate = 1; }
+            }, {
+                'type': 'item', 'id': '125', 'text': '1.25x', 'icon': 'check',
+                'action': () => { vid.playbackRate = 1.25; }
+            }, , {
+                'type': 'item', 'id': '150', 'text': '1.5x', 'icon': 'check',
+                'action': () => { vid.playbackRate = 1.5; }
+            }, {
+                'type': 'item', 'id': '200', 'text': '2x', 'icon': 'check',
+                'action': () => { vid.playbackRate = 2; }
+            }, {
+                'type': 'item', 'id': '300', 'text': '3x', 'icon': 'check',
+                'action': () => { vid.playbackRate = 3; }
+            }, {
+                'type': 'item', 'id': '500', 'text': '5x', 'icon': 'check',
+                'action': () => { vid.playbackRate = 5; }
+            }, {
+                'type': 'item', 'id': '1000', 'text': '10x', 'icon': 'check',
+                'action': () => { vid.playbackRate = 10; }
+            }], 'dropdown-main');
+            let ids = [10, 25, 50, 75, 100, 125, 150, 200, 300, 500, 1000];
+            ids.forEach((id) => {
+                try {
+                    _id(`dropdown-speed-${id}-icon`).style.opacity = 0;
+                } catch (error) {}
+            });
+            _id(`dropdown-speed-${Math.round(vid.playbackRate*100)}-icon`).style.opacity = 1;
+        }
+    }, {
+        'type': 'sep'
+    }, {
+        'disabled': true,
+        'type': 'item',
+        'id': 'cast',
+        'text': 'Cast...',
+        'icon': 'cast'
+    }, {
+        'type': 'sep'
+    }, {
+        'disabled': !window.vidCanPlay,
+        'type': 'item',
+        'id': 'open',
+        'text': 'Open player in new tab...',
+        'icon': 'open_in_new',
+        'action': () => { window.open(`${window.location.href}&start=${vid.currentTime}`, '_blank'); }
+    }, {
+        'disabled': !window.vidCanPlay,
+        'type': 'item',
+        'id': 'download',
+        'text': 'Download video',
+        'icon': 'download',
+        'action': () => { window.open(vid.src, '_blank'); }
+    }, {
+        'type': 'sep'
+    }, {
+        'type': 'item',
+        'id': 'about',
+        'text': 'CyberVideoPlayer...',
+        'icon': 'public',
+        'action': () => { window.open("https://github.com/CyberGen49/CyberVideoPlayer", '_blank'); }
+    }])
+}, false)
+
+// Save the cursor's current position so we can reference it elsewhere
+window.addEventListener("mousemove", function(event) {
+    window.mouseX = event.clientX;
+    window.mouseY = event.clientY;
 });
 
 // Handle dynamically updating button icons
@@ -313,7 +643,6 @@ if ($_GET('src')) {
     vidCanPlay = true;
     try {
         vid.src = atob($_GET('src')).replace('"', '');
-        vid.load();
     } catch (error) {
         var vidCanPlay = false;
     }
@@ -328,4 +657,9 @@ if ($_GET('script')) {
             <script src="${script}"></script>
         `);
     } catch (error) {}
+}
+
+// Make the background transparent if requested
+if ($_GET('noBackground') !== null) {
+    _id('body').style.background = "rgba(0, 0, 0, 0)";
 }

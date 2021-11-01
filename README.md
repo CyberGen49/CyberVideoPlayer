@@ -38,9 +38,16 @@ This repository is a template, so it's easy to clone it for yourself if you want
 * `autoplay`: The video will automatically play on load
 * `start=t`: The video will move to `t` seconds on load
 * `script=url`: An external Javascript file to include when loading the page, where `url` is an absolute URL to a Javascript file
+* `noBackground`: The page background will be transparent, so if the player is embedded at an aspect ratio not matching that of the video, the parent site's background will show through instead of just being black.
 
 ## Changelog
-### 1.1.0 - 2021-10-28
+### 1.2.0 - 2021-10-31
+* Added double tap to jump on mobile (left and right)
+* Added a custom context menu with more options like looping and playback speed
+* Fixed showing all buffer points in the progress bar
+* Added a loading spinner to indicate buffering
+
+### 1.1.0 - 2021-10-30
 * Further refinement
 * Updated the fullscreen functionality to hide system navigation elements like the Android navigation bar
 
