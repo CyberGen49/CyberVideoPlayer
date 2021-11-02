@@ -50,6 +50,7 @@ These parameters control various aspects of the player. Pass them after the main
 * `script=url`: An external Javascript file to include when loading the page, where `url` is an absolute URL to a Javascript file
 * `noBackground`: Makes the page background transparent, so if the player is embedded at an aspect ratio not matching that of the video, the parent site's background will show through instead of just being black.
 * `noDownload`: Removes the Download context menu option
+* `noRestore`: Prevents video progress from being saved and restored
 
 ## Reading data from the player
 CyberVideoPlayer allows for its parent site to access some video information. Use the following Javascript on your site to read and save data sent from the player:
@@ -90,6 +91,10 @@ player.contentWindow.postMessage(msg, '*');
 
 ## Changelog
 Hotfix commits to the repo aren't mentioned here.
+
+### 1.3.0 - 2021-11-02
+* Made playback speed persistent (saved to and loaded from LocalStorage)
+* Added the saving of video progress to LocalStorage, and videos longer than a set (undetermined) amount of time will have their progress automatically restored on load
 
 ### 1.2.0 - 2021-10-31
 * Added double tap to jump on mobile (left and right)

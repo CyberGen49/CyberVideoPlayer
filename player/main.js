@@ -1,5 +1,13 @@
 
+// Check if we're in an iframe
 var isIframe = (window.location !== window.parent.location);
+
+// Initialize settings stored in LocalStorage
+var data = JSON.parse(localStorage.getItem('settings'));
+if (data === null) data = {};
+// Initialize saved video progress stored in LocalStorage
+var progSave = JSON.parse(localStorage.getItem('progress'));
+if (progSave === null) progSave = {};
 
 // Shorthand function for document.getElementById()
 function _id(id) {
@@ -81,7 +89,7 @@ function showDropdown(id, data, anchorId = null) {
     if (!_id(`dropdown-${id}`)) {
         _id("body").insertAdjacentHTML('beforeend', `
             <div id="dropdownArea-${id}" class="dropdownHitArea" style="display: none;"></div>
-            <div id="dropdown-${id}" class="dropdown" style="display: none; opacity: 0">
+            <div id="dropdown-${id}" class="dropdown acrylic" style="display: none; opacity: 0">
         `);
         _id(`dropdownArea-${id}`).addEventListener("click", function() { hideDropdown(id) });
         _id(`dropdownArea-${id}`).addEventListener("contextmenu", function(e) { e.preventDefault(); });
@@ -278,8 +286,23 @@ const resetControlTimeout = function(timeout = 3000) {
 var started = false;
 vid.addEventListener('canplay', function() {
     document.title = decodeURIComponent(vid.src.substring(vid.src.lastIndexOf('/')+1));
-    if ($_GET('start') > 0 && !window.started) {
-        vid.currentTime = $_GET('start');
+    if (!window.started) {
+        if ($_GET('start') > 0) {
+            vid.currentTime = $_GET('start');
+        } else if ($_GET('noRestore') === null) {
+            // If this video has saved progress
+            let savedProg = (typeof progSave[vid.src] !== 'undefined');
+            // If this video's progress was saved less than 7 days ago
+            let notTooOld = ((Date.now()-progSave[vid.src].created) < (1000*60*60*24*7));
+            // If the video is longer than 5 minutes
+            let notTooShort = (vid.duration > (60*5));
+            // Put all the conditions together
+            if (savedProg && notTooOld && notTooShort) {
+                // Restore the video's progress
+                vid.currentTime = progSave[vid.src].time;
+                console.log(`Video progress restored to ${vid.currentTime}`);
+            }
+        }
         window.started = true;
     }
     _id('loadingSpinner').style.opacity = 0;
@@ -292,11 +315,20 @@ vid.addEventListener('durationchange', function() {
     window.vidCanPlay = true;
 });
 // Do this stuff when the video's progress changes
+var lastTime = 0;
 vid.addEventListener('timeupdate', function() {
     if (!window.vidScrubbing) {
         _id('progressTime').innerHTML = secondsFormat(vid.currentTime);
         _id('progressFakeFront').style.width = `${(Math.ceil(vid.currentTime)/Math.ceil(vid.duration))*100}%`;
         _id('progressSliderInner').value = Math.ceil(vid.currentTime);
+        if ($_GET('noRestore') === null && (vid.currentTime > (window.lastTime+3) || vid.currentTime < (window.lastTime-3))) {
+            window.progSave[vid.src] = {};
+            window.progSave[vid.src].time = Math.round(vid.currentTime);
+            window.progSave[vid.src].created = Date.now();
+            localStorage.setItem('progress', JSON.stringify(window.progSave));
+            console.log(`Saved video progress to LocalStorage`);
+            window.lastTime = vid.currentTime;
+        }
     }
     window.top.postMessage({'time': vid.currentTime}, '*');
 });
@@ -384,11 +416,9 @@ _id('forward').addEventListener('click', function() {
 
 // Handle the progress slider
 var vidScrubbing = false;
-var vidScrubbingState;
 _id('progressSliderInner').addEventListener('mousedown', function() {
     resetControlTimeout();
     if (!window.controlsVisible) return;
-    vidScrubbingState = vid.playing;
     window.vidScrubbing = true;
     console.log("Video scrubbing started");
 });
@@ -548,39 +578,45 @@ document.addEventListener("contextmenu", function(e) {
         'text': 'Playback speed...',
         'icon': 'speed',
         'action': () => {
+            const setPlaybackRate = function(rate) {
+                vid.playbackRate = rate;
+                window.data.playbackRate = rate;
+                localStorage.setItem('settings', JSON.stringify(window.data));
+                console.log(`Changed playback rate to ${rate}`);
+            }
             showDropdown('speed', [{
                 'type': 'item', 'id': '10', 'text': '0.1x', 'icon': 'check',
-                'action': () => { vid.playbackRate = 0.1; }
+                'action': () => { setPlaybackRate(0.1) }
             }, {
                 'type': 'item', 'id': '25', 'text': '0.25x', 'icon': 'check',
-                'action': () => { vid.playbackRate = 0.25; }
+                'action': () => { setPlaybackRate(0.25) }
             }, {
                 'type': 'item', 'id': '50', 'text': '0.5x', 'icon': 'check',
-                'action': () => { vid.playbackRate = 0.5; }
+                'action': () => { setPlaybackRate(0.5) }
             }, {
                 'type': 'item', 'id': '75', 'text': '0.75x', 'icon': 'check',
-                'action': () => { vid.playbackRate = 0.75; }
+                'action': () => { setPlaybackRate(0.75) }
             }, {
                 'type': 'item', 'id': '100', 'text': 'Normal', 'icon': 'check',
-                'action': () => { vid.playbackRate = 1; }
+                'action': () => { setPlaybackRate(1) }
             }, {
                 'type': 'item', 'id': '125', 'text': '1.25x', 'icon': 'check',
-                'action': () => { vid.playbackRate = 1.25; }
+                'action': () => { setPlaybackRate(1.25) }
             }, , {
                 'type': 'item', 'id': '150', 'text': '1.5x', 'icon': 'check',
-                'action': () => { vid.playbackRate = 1.5; }
+                'action': () => { setPlaybackRate(1.5) }
             }, {
                 'type': 'item', 'id': '200', 'text': '2x', 'icon': 'check',
-                'action': () => { vid.playbackRate = 2; }
+                'action': () => { setPlaybackRate(2) }
             }, {
                 'type': 'item', 'id': '300', 'text': '3x', 'icon': 'check',
-                'action': () => { vid.playbackRate = 3; }
+                'action': () => { setPlaybackRate(3) }
             }, {
                 'type': 'item', 'id': '500', 'text': '5x', 'icon': 'check',
-                'action': () => { vid.playbackRate = 5; }
+                'action': () => { setPlaybackRate(5) }
             }, {
                 'type': 'item', 'id': '1000', 'text': '10x', 'icon': 'check',
-                'action': () => { vid.playbackRate = 10; }
+                'action': () => { setPlaybackRate(10) }
             }], 'dropdown-main');
             let ids = [10, 25, 50, 75, 100, 125, 150, 200, 300, 500, 1000];
             ids.forEach((id) => {
@@ -661,6 +697,8 @@ var vidCanPlay = false;
 if ($_GET('src')) {
     try {
         vid.src = atob($_GET('src')).replace('"', '');
+        if (data.playbackRate)
+            vid.playbackRate = data.playbackRate;
         if ($_GET('autoplay') !== null) vid.play();
     } catch (error) {
         showBigIndicator('block', true);
