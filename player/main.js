@@ -282,7 +282,6 @@ vid.addEventListener('canplay', function() {
         vid.currentTime = $_GET('start');
         window.started = true;
     }
-    if ($_GET('autoplay') !== null) vid.play();
     _id('loadingSpinner').style.opacity = 0;
 });
 // Do this stuff when the video's duration changes
@@ -453,18 +452,25 @@ var checkInterval = 50.0;
 var lastPlayPos = 0;
 var currentPlayPos = 0;
 var bufferingDetected = false;
+var bufferSpinnerInterval;
 function checkBuffering() {
     currentPlayPos = vid.currentTime;
     
     var offset = (checkInterval - 20) / 1000;
     
     if (!bufferingDetected && currentPlayPos < (lastPlayPos + offset) && !vid.paused) {
-        _id('loadingSpinner').style.opacity = 1;
+        console.log("Video buffering...");
+        clearInterval(bufferSpinnerInterval);
+        window.bufferSpinnerInterval = setInterval(() => {
+            _id('loadingSpinner').style.opacity = 1;
+        }, 500);
         bufferingDetected = true;
         window.top.postMessage({'status': 'buffering'}, '*');
     }
     
     if (bufferingDetected && currentPlayPos > (lastPlayPos + offset) && !vid.paused) {
+        console.log("Buffering finished");
+        clearInterval(bufferSpinnerInterval);
         _id('loadingSpinner').style.opacity = 0;
         bufferingDetected = false;
         window.top.postMessage({'status': 'playing'}, '*');
@@ -589,7 +595,7 @@ document.addEventListener("contextmenu", function(e) {
         'disabled': true,
         'type': 'item',
         'id': 'cast',
-        'text': 'Cast...',
+        'text': 'Cast (Not implemented)',
         'icon': 'cast'
     });
     if (isIframe || $_GET('noDownload') === null) data.push({'type': 'sep'});
@@ -654,6 +660,7 @@ var vidCanPlay = false;
 if ($_GET('src')) {
     try {
         vid.src = atob($_GET('src')).replace('"', '');
+        if ($_GET('autoplay') !== null) vid.play();
     } catch (error) {
         showBigIndicator('block', true);
         _id('playPauseBig').innerHTML = 'block';
