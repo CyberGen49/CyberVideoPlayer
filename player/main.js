@@ -447,6 +447,7 @@ _id('mobHitRight').addEventListener('click', function(e) {
 });
 
 // Handle showing a loading spinner if the video is buffering
+// Based on an answer from this StackOverflow question:
 // https://stackoverflow.com/questions/21399872/how-to-detect-whether-html5-video-has-paused-for-buffering
 var checkInterval = 50.0;
 var lastPlayPos = 0;
@@ -463,7 +464,7 @@ function checkBuffering() {
         clearInterval(bufferSpinnerInterval);
         window.bufferSpinnerInterval = setInterval(() => {
             _id('loadingSpinner').style.opacity = 1;
-        }, 500);
+        }, 250);
         bufferingDetected = true;
         window.top.postMessage({'status': 'buffering'}, '*');
     }
