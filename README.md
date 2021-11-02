@@ -89,6 +89,8 @@ player.contentWindow.postMessage(msg, '*');
 * `{'cmd': 'time', 'time': t}`: Changes the current time of the video, where `t` is a number of seconds
 
 ## Changelog
+Hotfix commits to the repo aren't mentioned here.
+
 ### 1.2.0 - 2021-10-31
 * Added double tap to jump on mobile (left and right)
 * Added a custom context menu with more options like looping and playback speed
