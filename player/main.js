@@ -657,6 +657,7 @@ if ($_GET('src')) {
     } catch (error) {
         showBigIndicator('block', true);
         _id('playPauseBig').innerHTML = 'block';
+        _id('playPauseBig').classList.add('disabled');
         window.top.postMessage({'failed': true}, '*');
     }
 }
