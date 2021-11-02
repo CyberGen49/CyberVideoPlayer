@@ -26,13 +26,15 @@ Embedding the player on your site:
 <iframe src="https://cybergen49.github.io/CyberVideoPlayer/player/?src=aHR0cDovL2NvbW1vbmRhdGFzdG9yYWdlLmdvb2dsZWFwaXMuY29tL2d0di12aWRlb3MtYnVja2V0L3NhbXBsZS9CaWdCdWNrQnVubnkubXA0&autoplay"
         allow="autoplay; fullscreen"
         frameborder=0
-        width=640
-        height=480
+        width=384
+        height=216
         id="videoPlayer"
 >
 ```
 
-You can replace `cybergen49.github.io/CyberVideoPlayer` with `vid.simplecyber.org` for a shorter URL. That domain won't work if you clone or download the repository.
+Without allowing autoplay, the player might have trouble autoplaying the video if the user doesn't interact with it first. Without allowing fullscreen, all fullscreen functionality will cease to function.
+
+`cybergen49.github.io/CyberVideoPlayer` can be replaced with `vid.simplecyber.org` for a shorter URL, but only in this specific repository (meaning it won't work if you clone, download, etc.)
 
 This repository is a template, so it's easy to clone it for yourself if you want to make changes or use your own domain.
 
