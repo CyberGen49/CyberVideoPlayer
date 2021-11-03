@@ -5,6 +5,7 @@ A clean and functional embeddable HTML video player, hosted with Github Pages.
 ## Features
 * A sleek, mobile-friendly design with rounded elements and blurred backgrounds
 * Toggle loop, change playback speed, and more all from a custom right-click context menu, even on mobile (tap and hold)
+* Automatic saving and restoration of progress on videos at least 5 minutes long
 * Keyboard shortcuts:
     * `Space`: Play/pause the video
     * `F`: Toggle fullscreen
