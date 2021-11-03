@@ -641,7 +641,10 @@ document.addEventListener("contextmenu", function(e) {
         'id': 'open',
         'text': 'Open player in new tab...',
         'icon': 'open_in_new',
-        'action': () => { window.open(`${window.location.href}&start=${vid.currentTime}`, '_blank'); }
+        'action': () => {
+            window.open(`${window.location.href}&start=${vid.currentTime}`, '_blank'); 
+            vid.pause();
+        }
     });
     if ($_GET('noDownload') === null) data.push({
         'disabled': !window.vidCanPlay,
