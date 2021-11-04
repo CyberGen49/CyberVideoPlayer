@@ -2,7 +2,7 @@
 # CyberVideoPlayer
 A clean and functional embeddable HTML video player, hosted with Github Pages.
 
-![CyberVideoPlayer Social Image](https://cdn.discordapp.com/attachments/798468240606363678/905651247946809354/CyberVideoPlayer_Repo_Promo.png)
+![CyberVideoPlayer Social Image](https://cdn.discordapp.com/attachments/798468240606363678/905652445655474227/CyberVideoPlayer_Repo_Promo.png)
 
 ## Features
 * A sleek, mobile-friendly design with rounded elements and blurred backgrounds
