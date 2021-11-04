@@ -95,6 +95,9 @@ player.contentWindow.postMessage(msg, '*');
 ## Changelog
 Hotfix commits to the repo aren't mentioned here.
 
+### 1.3.2 - 2021-11-04
+* Added a context menu option to disable blur effects
+
 ### 1.3.1 - 2021-11-03
 * Bug fixes and minor improvements
 * Made the vertical hit area for the progress bar larger

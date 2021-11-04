@@ -212,6 +212,41 @@ function hideDropdown(id) {
     }, 200);
 }
 
+// Checks the blur setting and update accordingly
+function checkBlur() {
+    let acrylicEls = document.getElementsByClassName('acrylic');
+    for (i = 0; i < acrylicEls.length; i++) {
+        let el = acrylicEls[i];
+        if (data.blur === false)
+            el.classList.add('noBlur');
+        else
+            el.classList.remove('noBlur');
+    }
+}
+
+// Update stored settings
+function updateSettingsStore() {
+    localStorage.setItem('settings', JSON.stringify(window.data));
+    console.log('Saved updated settings to LocalStorage');
+}
+
+// Update stored video progress
+function updateProgStore() {
+    if ($_GET('noRestore') === null) {
+        if (!vid.ended) {
+            window.progSave[vid.src] = {};
+            window.progSave[vid.src].time = Math.round(vid.currentTime);
+            window.progSave[vid.src].created = Date.now();
+            console.log(`Saved video progress data at ${Math.round(vid.currentTime)}s`);
+        } else {
+            delete window.progSave[vid.src];
+            console.log(`Deleted video progress because the video has ended`);
+        }
+        localStorage.setItem('progress', JSON.stringify(window.progSave));
+        window.lastTime = vid.currentTime;
+    }
+}
+
 // Get the video object
 var vid = _id('vid');
 
@@ -224,7 +259,7 @@ Object.defineProperty(HTMLMediaElement.prototype, 'playing', {
 
 // Toggles the video between playing and paused
 // We throw some extra timeouts in here to make extra sure that things actually happen
-const togglePlayPause = function() {
+function togglePlayPause() {
     if (!window.vidCanPlay) return;
     if (vid.playing) {
         vid.pause();
@@ -239,7 +274,7 @@ const togglePlayPause = function() {
 }
 
 // Toggles mute
-const toggleMute = function() {
+function toggleMute() {
     if (!window.vidCanPlay) return;
     if (vid.muted) {
         vid.muted = false;
@@ -248,12 +283,11 @@ const toggleMute = function() {
         vid.muted = true;
         showBigIndicator('volume_off');
     }
-    resetControlTimeout();
 }
 
 // Flashes a big centered icon
 var bigIndicatorTimeout;
-const showBigIndicator = function(icon, persist = false, id = 'bigIndicator') {
+function showBigIndicator(icon, persist = false, id = 'bigIndicator') {
     if (!persist && !window.vidCanPlay) return;
     clearTimeout(window.bigIndicatorTimeout);
     _id(id).innerHTML = icon;
@@ -275,7 +309,7 @@ const showBigIndicator = function(icon, persist = false, id = 'bigIndicator') {
 // Handle hiding and showing the controls
 var controlsTimeout;
 var controlsVisible = true;
-const resetControlTimeout = function(timeout = 3000) {
+function resetControlTimeout(timeout = 3000) {
     clearTimeout(controlsTimeout);
     _id('body').style.cursor = 'initial';
     _id('controls').classList.add('visible');
@@ -293,29 +327,6 @@ const resetControlTimeout = function(timeout = 3000) {
             window.controlsVisible = false;
         }
     }, timeout);
-}
-
-// Update stored settings
-const updateSettingsStore = function() {
-    localStorage.setItem('settings', JSON.stringify(window.data));
-    console.log('Saved updated settings to LocalStorage');
-}
-
-// Update stored video progress
-const updateProgStore = function() {
-    if ($_GET('noRestore') === null) {
-        if (!vid.ended) {
-            window.progSave[vid.src] = {};
-            window.progSave[vid.src].time = Math.round(vid.currentTime);
-            window.progSave[vid.src].created = Date.now();
-            console.log(`Saved video progress data at ${Math.round(vid.currentTime)}s`);
-        } else {
-            delete window.progSave[vid.src];
-            console.log(`Deleted video progress because the video has ended`);
-        }
-        localStorage.setItem('progress', JSON.stringify(window.progSave));
-        window.lastTime = vid.currentTime;
-    }
 }
 
 // Do this stuff when the video can start playing
@@ -340,6 +351,7 @@ vid.addEventListener('canplay', function() {
         window.started = true;
     }
     _id('loadingSpinner').style.opacity = 0;
+    resetControlTimeout();
 });
 // Do this stuff when the video's duration changes
 vid.addEventListener('durationchange', function() {
@@ -609,7 +621,7 @@ document.addEventListener("contextmenu", function(e) {
         'text': 'Playback speed...',
         'icon': 'speed',
         'action': () => {
-            const setPlaybackRate = function(rate) {
+            function setPlaybackRate(rate) {
                 vid.playbackRate = rate;
                 window.data.playbackRate = rate;
                 updateSettingsStore();
@@ -688,6 +700,21 @@ document.addEventListener("contextmenu", function(e) {
     data.push({'type': 'sep'});
     data.push({
         'type': 'item',
+        'id': 'loop',
+        'text': (() => {
+            if (data.blur) return "Disable blur effects"
+            else return "Enable blur effects"
+        })(),
+        'icon': 'loop',
+        'action': () => {
+            if (data.blur) window.data.blur = false;
+            else window.data.blur = true;
+            updateSettingsStore();
+            checkBlur();
+        }
+    });
+    data.push({
+        'type': 'item',
         'id': 'about',
         'text': 'CyberVideoPlayer...',
         'icon': 'public',
@@ -734,6 +761,7 @@ if ($_GET('src')) {
         if (data.playbackRate)
             vid.playbackRate = data.playbackRate;
         if ($_GET('autoplay') !== null) vid.play();
+        resetControlTimeout();
     } catch (error) {
         showBigIndicator('block', true);
         _id('playPauseBig').innerHTML = 'block';
@@ -764,3 +792,6 @@ window.onmessage = function(e) {
     if (data.cmd == 'pause') vid.pause();
     if (data.cmd == 'time') vid.currentTime = data.time;
 };
+
+// Check for blur settings
+checkBlur();
