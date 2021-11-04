@@ -290,7 +290,7 @@ const updateSettingsStore = function() {
 
 // Update stored video progress
 const updateProgStore = function() {
-    if ($_GET('noRestore') === null && (vid.currentTime > (window.lastTime+3) || vid.currentTime < (window.lastTime-3))) {
+    if ($_GET('noRestore') === null) {
         if (!vid.ended) {
             window.progSave[vid.src] = {};
             window.progSave[vid.src].time = Math.round(vid.currentTime);
@@ -345,7 +345,9 @@ vid.addEventListener('timeupdate', function() {
         _id('progressFakeFront').style.width = `${(Math.ceil(vid.currentTime)/Math.ceil(vid.duration))*100}%`;
         _id('progressSliderInner').value = Math.ceil(vid.currentTime);
     }
-    updateProgStore();
+    if (vid.currentTime > (window.lastTime+3)
+      || vid.currentTime < (window.lastTime-3))
+        updateProgStore();
     window.top.postMessage({'time': vid.currentTime}, '*');
 });
 // Do this stuff when the video buffers more data
