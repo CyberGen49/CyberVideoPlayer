@@ -2,6 +2,8 @@
 # CyberVideoPlayer
 A clean and functional embeddable HTML video player, hosted with Github Pages.
 
+![CyberVideoPlayer Social Image](https://repository-images.githubusercontent.com/422016707/5fef7d47-98ff-48e5-b566-d655b52ee8fc)
+
 ## Features
 * A sleek, mobile-friendly design with rounded elements and blurred backgrounds
 * Toggle loop, change playback speed, and more all from a custom right-click context menu, even on mobile (tap and hold)
