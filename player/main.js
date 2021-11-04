@@ -282,6 +282,29 @@ const resetControlTimeout = function(timeout = 3000) {
     }, timeout);
 }
 
+// Update stored settings
+const updateSettingsStore = function() {
+    localStorage.setItem('settings', JSON.stringify(window.data));
+    console.log('Saved updated settings to LocalStorage');
+}
+
+// Update stored video progress
+const updateProgStore = function() {
+    if ($_GET('noRestore') === null && (vid.currentTime > (window.lastTime+3) || vid.currentTime < (window.lastTime-3))) {
+        if (!vid.ended) {
+            window.progSave[vid.src] = {};
+            window.progSave[vid.src].time = Math.round(vid.currentTime);
+            window.progSave[vid.src].created = Date.now();
+        } else {
+            delete window.progSave[vid.src];
+            console.log(`Deleted video progress because the video has ended`);
+        }
+        localStorage.setItem('progress', JSON.stringify(window.progSave));
+        console.log(`Saved video progress data`);
+        window.lastTime = vid.currentTime;
+    }
+}
+
 // Do this stuff when the video can start playing
 var started = false;
 vid.addEventListener('canplay', function() {
@@ -321,15 +344,8 @@ vid.addEventListener('timeupdate', function() {
         _id('progressTime').innerHTML = secondsFormat(vid.currentTime);
         _id('progressFakeFront').style.width = `${(Math.ceil(vid.currentTime)/Math.ceil(vid.duration))*100}%`;
         _id('progressSliderInner').value = Math.ceil(vid.currentTime);
-        if ($_GET('noRestore') === null && (vid.currentTime > (window.lastTime+3) || vid.currentTime < (window.lastTime-3))) {
-            window.progSave[vid.src] = {};
-            window.progSave[vid.src].time = Math.round(vid.currentTime);
-            window.progSave[vid.src].created = Date.now();
-            localStorage.setItem('progress', JSON.stringify(window.progSave));
-            console.log(`Saved video progress to LocalStorage`);
-            window.lastTime = vid.currentTime;
-        }
     }
+    updateProgStore();
     window.top.postMessage({'time': vid.currentTime}, '*');
 });
 // Do this stuff when the video buffers more data
@@ -353,6 +369,10 @@ vid.addEventListener('error', function() {
     _id('loadingSpinner').style.opacity = 0;
     window.top.postMessage({'failed': true}, '*');
     resetControlTimeout();
+});
+// Do this stuff when the video ends
+vid.addEventListener('ended', function() {
+    updateProgStore();
 });
 
 // Handle play/pause buttons
@@ -579,7 +599,7 @@ document.addEventListener("contextmenu", function(e) {
             const setPlaybackRate = function(rate) {
                 vid.playbackRate = rate;
                 window.data.playbackRate = rate;
-                localStorage.setItem('settings', JSON.stringify(window.data));
+                updateSettingsStore();
                 console.log(`Changed playback rate to ${rate}`);
             }
             showDropdown('speed', [{

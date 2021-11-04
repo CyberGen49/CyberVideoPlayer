@@ -95,6 +95,11 @@ player.contentWindow.postMessage(msg, '*');
 ## Changelog
 Hotfix commits to the repo aren't mentioned here.
 
+### 1.3.1 - 2021-11-03
+* Bug fixes and minor improvements
+* Made the vertical hit area for the progress bar larger
+* Made it so a video's progress is deleted if it ends
+
 ### 1.3.0 - 2021-11-02
 * Made playback speed persistent (saved to and loaded from LocalStorage)
 * Added the saving of video progress to LocalStorage, and videos longer than a set (undetermined) amount of time will have their progress automatically restored on load
