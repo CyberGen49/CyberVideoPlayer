@@ -217,7 +217,7 @@ function checkBlur() {
     let acrylicEls = document.getElementsByClassName('acrylic');
     for (i = 0; i < acrylicEls.length; i++) {
         let el = acrylicEls[i];
-        if (data.blur === false)
+        if (data.noBlur)
             el.classList.add('noBlur');
         else
             el.classList.remove('noBlur');
@@ -700,15 +700,15 @@ document.addEventListener("contextmenu", function(e) {
     data.push({'type': 'sep'});
     data.push({
         'type': 'item',
-        'id': 'loop',
+        'id': 'blurToggle',
         'text': (() => {
-            if (data.blur) return "Disable blur effects"
+            if (data.noBlur) return "Disable blur effects"
             else return "Enable blur effects"
         })(),
-        'icon': 'loop',
+        'icon': 'blur_on',
         'action': () => {
-            if (data.blur) window.data.blur = false;
-            else window.data.blur = true;
+            if (data.noBlur) window.data.noBlur = false;
+            else window.data.noBlur = true;
             updateSettingsStore();
             checkBlur();
         }
