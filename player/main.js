@@ -308,12 +308,12 @@ const updateProgStore = function() {
             window.progSave[vid.src] = {};
             window.progSave[vid.src].time = Math.round(vid.currentTime);
             window.progSave[vid.src].created = Date.now();
+            console.log(`Saved video progress data at ${Math.round(vid.currentTime)}s`);
         } else {
             delete window.progSave[vid.src];
             console.log(`Deleted video progress because the video has ended`);
         }
         localStorage.setItem('progress', JSON.stringify(window.progSave));
-        console.log(`Saved video progress data`);
         window.lastTime = vid.currentTime;
     }
 }
