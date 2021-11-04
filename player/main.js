@@ -8,6 +8,19 @@ if (data === null) data = {};
 // Initialize saved video progress stored in LocalStorage
 var progSave = JSON.parse(localStorage.getItem('progress'));
 if (progSave === null) progSave = {};
+// Prune old entries from video progress
+var progSaveKeys = Object.keys(progSave);
+var progSaveEntriesDeleted = 0;
+progSaveKeys.forEach((k) => {
+    let p = progSave[k];
+    if ((Date.now()-p.created) > (1000*60*60*24*7)) {
+        delete progSave[k];
+        progSaveEntriesDeleted++;
+    }
+});
+if (progSaveEntriesDeleted > 0) {
+    console.log(`${progSaveEntriesDeleted} old saved progress entries have been deleted`);
+}
 
 // Shorthand function for document.getElementById()
 function _id(id) {
@@ -315,12 +328,10 @@ vid.addEventListener('canplay', function() {
         } else if ($_GET('noRestore') === null) {
             // If this video has saved progress
             let savedProg = (typeof progSave[vid.src] !== 'undefined');
-            // If this video's progress was saved less than 7 days ago
-            let notTooOld = ((Date.now()-progSave[vid.src].created) < (1000*60*60*24*7));
             // If the video is longer than 5 minutes
             let notTooShort = (vid.duration > (60*5));
             // Put all the conditions together
-            if (savedProg && notTooOld && notTooShort) {
+            if (savedProg && notTooShort) {
                 // Restore the video's progress
                 vid.currentTime = progSave[vid.src].time;
                 console.log(`Video progress restored to ${vid.currentTime}`);

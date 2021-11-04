@@ -99,6 +99,7 @@ Hotfix commits to the repo aren't mentioned here.
 * Bug fixes and minor improvements
 * Made the vertical hit area for the progress bar larger
 * Made it so a video's progress is deleted if it ends
+* Now the player will scan through and delete all video progress entries that haven't been updated in the last 7 days
 
 ### 1.3.0 - 2021-11-02
 * Made playback speed persistent (saved to and loaded from LocalStorage)
