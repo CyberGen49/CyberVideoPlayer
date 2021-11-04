@@ -702,12 +702,12 @@ document.addEventListener("contextmenu", function(e) {
         'type': 'item',
         'id': 'blurToggle',
         'text': (() => {
-            if (data.noBlur) return "Disable blur effects"
+            if (!window.data.noBlur) return "Disable blur effects"
             else return "Enable blur effects"
         })(),
         'icon': 'blur_on',
         'action': () => {
-            if (data.noBlur) window.data.noBlur = false;
+            if (window.data.noBlur) window.data.noBlur = false;
             else window.data.noBlur = true;
             updateSettingsStore();
             checkBlur();

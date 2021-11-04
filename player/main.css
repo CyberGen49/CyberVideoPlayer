@@ -299,6 +299,7 @@ video {
 }
 .acrylic.noBlur {
     backdrop-filter: none;
+    background: rgba(50, 50, 50, 0.8);
 }
 
 /*
