@@ -458,7 +458,6 @@ var mobJump = {
     'right': 0
 }
 _id('mobHitLeft').addEventListener('click', function(e) {
-    resetControlTimeout();
     if ((Date.now()-window.mobJump.left) < 400) {
         e.preventDefault();
         _id('backward').click();
@@ -467,7 +466,6 @@ _id('mobHitLeft').addEventListener('click', function(e) {
     window.mobJump.right = 0;
 });
 _id('mobHitRight').addEventListener('click', function(e) {
-    resetControlTimeout();
     if ((Date.now()-window.mobJump.right) < 400) {
         e.preventDefault();
         _id('forward').click();
