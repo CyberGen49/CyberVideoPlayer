@@ -334,7 +334,7 @@ vid.addEventListener('canplay', function() {
             if (savedProg && notTooShort) {
                 // Restore the video's progress
                 vid.currentTime = progSave[vid.src].time;
-                console.log(`Video progress restored to ${vid.currentTime}`);
+                console.log(`Restored video progress to ${vid.currentTime}s`);
             }
         }
         window.started = true;
