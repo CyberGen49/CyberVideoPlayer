@@ -100,6 +100,8 @@ Hotfix commits to the repo aren't mentioned here.
 ### 1.4.0 - 2021-11-04
 * Added a context menu option to disable blur effects
 * Reorganized some files
+* Created the embed generator (find the link above)
+* Added OpenGraph meta tags to all pages
 
 ### 1.3.1 - 2021-11-03
 * Bug fixes and minor improvements
