@@ -467,7 +467,7 @@ var bufferSpinnerInterval;
 function checkBuffering() {
     currentPlayPos = vid.currentTime;
     
-    var offset = (checkInterval - 20) / 1000;
+    var offset = ((checkInterval*vid.playbackRate) - 20) / 1000;
     
     if (!bufferingDetected && currentPlayPos < (lastPlayPos + offset) && !vid.paused) {
         console.log("Video buffering...");
