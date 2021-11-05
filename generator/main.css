@@ -95,10 +95,11 @@ https://getcssscan.com/css-box-shadow-examples
 }
 .button:hover,
 .button:focus {
-    background: #777;
+    color: #000;
+    background: #fff;
 }
 .button:active {
-    background: #999;
+    background: #ccc;
 }
 
 #inputGo { 
