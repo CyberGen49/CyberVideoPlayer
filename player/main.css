@@ -109,7 +109,9 @@ video {
 #controlsMobile,
 #bigIndicators,
 #loadingSpinner {
-    padding-bottom: 60px;
+    padding: 0px;
+    margin: 0px;
+    margin-bottom: 60px !important;
 }
 
 #loadingSpinner {
@@ -297,10 +299,6 @@ video {
     backdrop-filter: blur(12px);
     box-shadow: 0px 3px 15px 0px rgba(0,0,0,0.3);
 }
-.acrylic.noBlur {
-    backdrop-filter: none;
-    background: rgba(50, 50, 50, 0.8);
-}
 
 /*
 
@@ -317,7 +315,6 @@ video {
 .mdSpinner {
     width: 230px;
     height: 230px;
-    margin: 0 auto;
 }
 .mdSpinner svg {
     animation: mdSpin-rotate 1.2s linear infinite;

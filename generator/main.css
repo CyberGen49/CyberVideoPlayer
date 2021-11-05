@@ -1,0 +1,127 @@
+
+* {
+    font-family: "Segoe UI", "Open Sans", sans-serif;
+    color: #000;
+    box-sizing: border-box;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Montserrat';
+}
+
+h1, h2, h3, h4, h5, h6, p {
+    padding: 0px;
+    margin: 0px;
+    padding-bottom: 5px;
+}
+
+p {
+    font-size: 16px;
+    line-height: 140%;
+}
+
+#title, #subtitle {
+    font-family: 'Montserrat';
+    margin: 0px;
+    padding: 0px;
+    font-size: 42px;
+    font-weight: bold;
+    opacity: 0.7;
+    text-align: center;
+}
+
+#subtitle {
+    font-size: 28px;
+    font-weight: normal;
+    margin-bottom: 20px;
+}
+
+#grad {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    /* background: rgb(64,179,191);
+    background: linear-gradient(135deg, rgba(64,179,191,1) 0%, rgba(34,73,216,1) 100%); */
+}
+
+.container {
+    margin: auto;
+    padding: 30px 0px;
+    max-width: 900px;
+}
+
+/* 
+This site is actually such a great source for good looking shadows
+https://getcssscan.com/css-box-shadow-examples
+*/
+#inputUrl {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 14px 20px;
+    color: #444;
+    font-size: 18px;
+    background: #fff;
+    border-radius: 10px;
+    outline: none;
+    border: 2px solid #fff;
+    transition: 0.1s ease-in-out;
+    box-shadow: rgba(17, 17, 26, 0.1) 0px 4px 16px, rgba(17, 17, 26, 0.05) 0px 8px 32px;
+    overflow-y: none;
+}
+#inputUrl:hover {
+    border-color: #eee;
+}
+#inputUrl:focus {
+    border-color: #444;
+}
+
+#buttonCont {
+    display: flex;
+    align-items: center;
+}
+
+.button {
+    padding: 14px 20px;
+    font-family: 'Montserrat';
+    font-size: 18px;
+    font-weight: bold;
+    color: #fff;
+    background: #444;
+    border-radius: 10px;
+    outline: none;
+    border: 2px solid rgba(0, 0, 0, 0);
+    transition: 0.1s ease-in-out;
+    box-shadow: rgba(17, 17, 26, 0.1) 0px 4px 16px, rgba(17, 17, 26, 0.05) 0px 8px 32px;
+}
+.button:hover,
+.button:focus {
+    background: #777;
+}
+.button:active {
+    background: #999;
+}
+
+#inputGo { 
+    margin-left: 15px;
+}
+
+#embedCard {
+    margin-top: 20px;
+    padding-bottom: 56.25%;
+    border-radius: 10px;
+    box-shadow: rgba(17, 17, 26, 0.1) 0px 4px 16px, rgba(17, 17, 26, 0.05) 0px 8px 32px;
+    position: relative;
+}
+
+iframe {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    display: block;
+    border-radius: 10px;
+    width: 100%;
+    height: 100%;
+}

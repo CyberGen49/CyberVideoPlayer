@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Embed Generator</title>
+        <link rel="icon" href="../assets/icon.png">
+        <!-- Bootstrap -->
+        <link rel="stylesheet" href="../assets/bootstrap-grid.min.css">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <!-- Normalize.css -->
+        <link href="../assets/normalize.min.css" rel="stylesheet">
+        <!-- Material Icon Fonts -->
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+        <!-- App styles -->
+        <link href="../assets/global.css" rel="stylesheet">
+        <link href="main.css" rel="stylesheet">
+    </head>
+
+    <body id="body" class="no-transitions">
+        <div id="grad"></div>
+        <div class="container">
+            <h1 id="title">CyberVideoPlayer</h1>
+            <h2 id="subtitle">Embed Generator</h2>
+            <h3>What's this?</h3>
+            <p>You can use this page to generate CyberVideoPlayer embeds. Since the player requires that video URLs are encoded as base64, it's not always convenient to make yourself an embed. To make that process easier, just type or paste your video link below, and you'll get a working embed link in return.</p>
+            <div style="height: 20px"></div>
+            <div class="row no-gutters">
+                <div class="col">
+                    <input id="inputUrl" type="url" placeholder="Type or paste a direct video URL" autocomplete="off">
+                </div>
+                <div id="buttonCont" class="col-auto">
+                    <button id="inputGo" class="button">Embed!</button>
+                </div>
+            </div>
+            <div id="embedCont"></div>
+        </div>
+        <script src="../assets/global.js"></script>
+        <script src="main.js"></script>
+    </body>
+</html>

@@ -1,0 +1,9 @@
+
+/* Disables transitions for all child elements */
+.no-transitions *:not(.no-transitions-exclude) {
+    -webkit-transition: none !important;
+    -moz-transition: none !important;
+    -ms-transition: none !important;
+    -o-transition: none !important;
+    transition: none !important;
+}

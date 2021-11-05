@@ -19,6 +19,8 @@ A clean and functional embeddable HTML video player, hosted with Github Pages.
     * `Double-tap right`: Skip forward 10 seconds
 
 ## Usage
+Try out [the embed generator](https://cybergen49.github.io/CyberVideoPlayer/generator) to get a feel for CyberVideoPlayer with your own videos.
+
 Example working URL:  
 <https://cybergen49.github.io/CyberVideoPlayer/player/?src=aHR0cDovL2NvbW1vbmRhdGFzdG9yYWdlLmdvb2dsZWFwaXMuY29tL2d0di12aWRlb3MtYnVja2V0L3NhbXBsZS9CaWdCdWNrQnVubnkubXA0&autoplay>
 
