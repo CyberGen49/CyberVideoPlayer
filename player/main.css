@@ -1,10 +1,4 @@
 
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700;800&display=swap');
-
-* {
-    font-family: 'Segoe UI', 'Open Sans', 'Roboto', sans-serif;
-}
-
 body {
     background: #000;
 }
@@ -111,7 +105,6 @@ video {
 #loadingSpinner {
     padding: 0px;
     margin: 0px;
-    margin-bottom: 60px !important;
 }
 
 #loadingSpinner {
@@ -313,8 +306,8 @@ video {
 */
 
 .mdSpinner {
-    width: 230px;
-    height: 230px;
+    width: 140px;
+    height: 140px;
 }
 .mdSpinner svg {
     animation: mdSpin-rotate 1.2s linear infinite;

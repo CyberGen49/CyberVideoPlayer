@@ -24,14 +24,14 @@ p {
     font-family: 'Montserrat';
     margin: 0px;
     padding: 0px;
-    font-size: 42px;
+    font-size: 32px;
     font-weight: bold;
     opacity: 0.7;
     text-align: center;
 }
 
 #subtitle {
-    font-size: 28px;
+    font-size: 24px;
     font-weight: normal;
     margin-bottom: 20px;
 }
@@ -49,7 +49,7 @@ p {
 
 .container {
     margin: auto;
-    padding: 30px 0px;
+    padding: 30px 20px;
     max-width: 900px;
 }
 
@@ -60,6 +60,7 @@ https://getcssscan.com/css-box-shadow-examples
 #inputUrl {
     width: 100%;
     box-sizing: border-box;
+    margin: 5px;
     padding: 14px 20px;
     color: #444;
     font-size: 18px;
@@ -78,12 +79,8 @@ https://getcssscan.com/css-box-shadow-examples
     border-color: #444;
 }
 
-#buttonCont {
-    display: flex;
-    align-items: center;
-}
-
 .button {
+    margin: 5px;
     padding: 14px 20px;
     font-family: 'Montserrat';
     font-size: 18px;

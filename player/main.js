@@ -246,7 +246,9 @@ function resetControlTimeout(timeout = 3000) {
     clearTimeout(controlsTimeout);
     _id('body').style.cursor = 'initial';
     _id('controls').classList.add('visible');
-    _id('loadingSpinner').style.paddingBottom = '';
+    _id('loadingSpinner').style.paddingBottom = '55px';
+    _id('bigIndicators').style.paddingBottom = '55px';
+    _id('controlsMobile').style.paddingBottom = '55px';
     // This small timeout makes sure other functions have time to react
     // to controls not being visible before they're marked as visible
     setTimeout(() => {
@@ -257,6 +259,8 @@ function resetControlTimeout(timeout = 3000) {
             _id('body').style.cursor = 'none';
             _id('controls').classList.remove('visible');
             _id('loadingSpinner').style.paddingBottom = '0px';
+            //_id('bigIndicators').style.paddingBottom = '0px';
+            //_id('controlsMobile').style.paddingBottom = '0px';
             window.controlsVisible = false;
         }
     }, timeout);

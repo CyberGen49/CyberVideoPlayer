@@ -15,10 +15,10 @@ _id('inputGo').addEventListener('click', function() {
     <div style="height: 15px"></div>
     <div class="row no-gutters">
         <div class="col-auto-sm">
-            <button id="copyUrl" class="button" style="margin: 0px 5px;">Copy player URL</button>
+            <button id="copyUrl" class="button">Copy player URL</button>
         </div>
         <div class="col-auto-sm">
-            <button id="copyIframe" class="button" style="margin: 0px 5px;">Copy embed code</button>
+            <button id="copyIframe" class="button">Copy embed code</button>
         </div>
     </div>
     `;
