@@ -707,9 +707,26 @@ window.onmessage = function(e) {
 };
 
 // On load
+var vidCanPlay = false;
 window.addEventListener('load', function() {
     resetControlTimeout();
     _id('main').style.opacity = 1;
+    // Handle loading the video file
+    try {
+        if (!$_GET('src')) throw new Error('No src provided');
+        vid.src = atob($_GET('src')).replace('"', '');
+        if (data.playbackRate)
+            vid.playbackRate = data.playbackRate;
+        if ($_GET('autoplay') !== null) vid.play();
+        resetControlTimeout();
+    } catch (error) {
+        showBigIndicator('block', true);
+        _id('playPauseBig').innerHTML = 'block';
+        _id('playPauseBig').classList.add('disabled');
+        window.top.postMessage({'failed': true}, '*');
+        _id('loadingSpinner').style.opacity = 0;
+        console.log(`Initial load error: ${error.message}`);
+    }
 });
 
 // Handle dynamically updating button icons
@@ -740,24 +757,6 @@ var dynamicButtonInterval = setInterval(() => {
         _id('volume').innerHTML = 'volume_up';
     }
 }, 250);
-
-// Handle loading the video file
-var vidCanPlay = false;
-try {
-    if (!$_GET('src')) throw new Error('No src provided');
-    vid.src = atob($_GET('src')).replace('"', '');
-    if (data.playbackRate)
-        vid.playbackRate = data.playbackRate;
-    if ($_GET('autoplay') !== null) vid.play();
-    resetControlTimeout();
-} catch (error) {
-    showBigIndicator('block', true);
-    _id('playPauseBig').innerHTML = 'block';
-    _id('playPauseBig').classList.add('disabled');
-    window.top.postMessage({'failed': true}, '*');
-    _id('loadingSpinner').style.opacity = 0;
-    console.log(`Initial load error: ${error.message}`);
-}
 
 // Check for blur settings
 checkDynamicSettings();
