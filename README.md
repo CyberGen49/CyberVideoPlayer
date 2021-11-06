@@ -113,6 +113,7 @@ Hotfix commits to the repo aren't mentioned here.
 * Made indicators properly display on mobile in place of the big play/pause button
 * Added more diverse error icons (see above)
 * Added a 'fit to screen' option that sets the video to cover all extra space
+* Added a refresh option
 
 ### 1.4.0 - 2021-11-04
 * Added a context menu option to disable blur effects

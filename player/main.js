@@ -684,6 +684,13 @@ document.addEventListener("contextmenu", function(e) {
     });
     data.push({
         'type': 'item',
+        'id': 'refresh',
+        'text': 'Refresh player',
+        'icon': 'refresh',
+        'action': () => { window.location.href = '' }
+    });
+    data.push({
+        'type': 'item',
         'id': 'about',
         'text': 'CyberVideoPlayer...',
         'icon': 'public',
