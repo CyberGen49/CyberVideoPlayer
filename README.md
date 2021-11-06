@@ -52,10 +52,20 @@ These parameters control various aspects of the player. Pass them after the main
 ### Optional
 * `autoplay`: The video will automatically play on load
 * `start=t`: The video will move to `t` seconds on load
-* `script=url`: An external Javascript file to include when loading the page, where `url` is an absolute URL to a Javascript file
-* `noBackground`: Makes the page background transparent, so if the player is embedded at an aspect ratio not matching that of the video, the parent site's background will show through instead of just being black.
 * `noDownload`: Removes the Download context menu option
 * `noRestore`: Prevents video progress from being saved and restored
+
+### Error icons
+* Struck-through Wifi Icon
+    * A network error occurred
+* Struck through circle
+    * No `src` was provided
+    * Something went wrong while decoding the base64 string passed with the `src` parameter
+    * An unknown error occurred
+* Struck-through greater/less than symbols
+    * An error occurred while decoding the video file for playback
+* Circled question mark
+    * The provided video URL is of an unsupported format
 
 ## Reading data from the player
 CyberVideoPlayer allows for its parent site to access some video information. Use the following Javascript on your site to read and save data sent from the player:
@@ -96,6 +106,13 @@ player.contentWindow.postMessage(msg, '*');
 
 ## Changelog
 Hotfix commits to the repo aren't mentioned here.
+
+### 1.5.0 - 2021-11-05
+* Added a fade-in animation when the player loads
+* Removed the `noBackground` and `script` parameters
+* Made indicators properly display on mobile in place of the big play/pause button
+* Added more diverse error icons (see above)
+* Added a 'fit to screen' option that sets the video to cover all extra space
 
 ### 1.4.0 - 2021-11-04
 * Added a context menu option to disable blur effects

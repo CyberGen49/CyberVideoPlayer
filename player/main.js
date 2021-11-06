@@ -142,8 +142,8 @@ function hideDropdown(id) {
     }, 200);
 }
 
-// Checks the blur setting and update accordingly
-function checkBlur() {
+// Checks and updates dynamic settings
+function checkDynamicSettings() {
     if (_id('noBlurStyle')) _id('noBlurStyle').remove();
     if (data.noBlur) {
         _id('body').insertAdjacentHTML('beforeend', `
@@ -155,6 +155,8 @@ function checkBlur() {
             </style>
         `)
     }
+    if (data.fit) vid.style.objectFit = 'cover';
+    else vid.style.objectFit = '';
 }
 
 // Update stored settings
@@ -326,9 +328,23 @@ vid.addEventListener('progress', function() {
 // Do this stuff if the video fails to load
 vid.addEventListener('error', function() {
     window.vidCanPlay = false;
-    showBigIndicator('videocam_off', true);
-    _id('playPauseBig').innerHTML = 'videocam_off';
+    switch (vid.error.code) {
+        case 2:
+            showBigIndicator('wifi_off', true);
+            _id('playPauseBig').innerHTML = 'wifi_off'; break;
+        case 3:
+            showBigIndicator('code_off', true);
+            _id('playPauseBig').innerHTML = 'code_off'; break;
+        case 4:
+            showBigIndicator('help_outline', true);
+            _id('playPauseBig').innerHTML = 'help_outline'; break;
+        default:
+            showBigIndicator('block', true);
+            _id('playPauseBig').innerHTML = 'block'; break;
+    }
     _id('loadingSpinner').style.opacity = 0;
+    _id('playPauseBig').classList.add('disabled');
+    console.log(`Error loading video: ${vid.error.code} (${vid.error.message})`);
     window.top.postMessage({'failed': true}, '*');
     resetControlTimeout();
 });
@@ -524,6 +540,22 @@ document.addEventListener("contextmenu", function(e) {
     data.push({
         'disabled': !window.vidCanPlay,
         'type': 'item',
+        'id': 'fit',
+        'text': (() => {
+            if (window.data.fit) return "Fit to video";
+            else return "Fit to screen";
+        })(),
+        'icon': 'fit_screen',
+        'action': () => {
+            if (window.data.fit) window.data.fit = false;
+            else window.data.fit = true;
+            updateSettingsStore();
+            checkDynamicSettings();
+        }
+    });
+    data.push({
+        'disabled': !window.vidCanPlay,
+        'type': 'item',
         'id': 'loop',
         'text': (() => {
             if (vid.loop) return "Turn off loop"
@@ -647,7 +679,7 @@ document.addEventListener("contextmenu", function(e) {
             if (window.data.noBlur) window.data.noBlur = false;
             else window.data.noBlur = true;
             updateSettingsStore();
-            checkBlur();
+            checkDynamicSettings();
         }
     });
     data.push({
@@ -666,21 +698,40 @@ window.addEventListener("mousemove", function(event) {
     window.mouseY = event.clientY;
 });
 
+// Process messages from the parent
+window.onmessage = function(e) {
+    let data = e.data;
+    if (data.cmd == 'play') vid.play();
+    if (data.cmd == 'pause') vid.pause();
+    if (data.cmd == 'time') vid.currentTime = data.time;
+};
+
+// On load
+window.addEventListener('load', function() {
+    resetControlTimeout();
+    _id('main').style.opacity = 1;
+});
+
 // Handle dynamically updating button icons
 var dynamicButtonInterval = setInterval(() => {
-    if (vid.playing) {
-        window.top.postMessage({'status': 'playing'}, '*');
-        _id('playPause').innerHTML = 'pause';
-        _id('playPauseBig').innerHTML = 'pause';
-    } else if (vid.ended) {
-        window.top.postMessage({'status': 'finished'}, '*');
-        _id('playPause').innerHTML = 'replay';
-        _id('playPauseBig').innerHTML = 'replay';
-        resetControlTimeout();
+    if (vidCanPlay) {
+        _id('playPauseBig').classList.remove('disabled');
+        if (vid.playing) {
+            window.top.postMessage({'status': 'playing'}, '*');
+            _id('playPause').innerHTML = 'pause';
+            _id('playPauseBig').innerHTML = 'pause';
+        } else if (vid.ended) {
+            window.top.postMessage({'status': 'finished'}, '*');
+            _id('playPause').innerHTML = 'replay';
+            _id('playPauseBig').innerHTML = 'replay';
+            resetControlTimeout();
+        } else {
+            window.top.postMessage({'status': 'paused'}, '*');
+            _id('playPause').innerHTML = 'play_arrow';
+            _id('playPauseBig').innerHTML = 'play_arrow';
+        }
     } else {
-        window.top.postMessage({'status': 'paused'}, '*');
-        _id('playPause').innerHTML = 'play_arrow';
-        _id('playPauseBig').innerHTML = 'play_arrow';
+        _id('playPauseBig').classList.add('disabled');
     }
 
     if (vid.muted) {
@@ -692,43 +743,21 @@ var dynamicButtonInterval = setInterval(() => {
 
 // Handle loading the video file
 var vidCanPlay = false;
-if ($_GET('src')) {
-    try {
-        vid.src = atob($_GET('src')).replace('"', '');
-        if (data.playbackRate)
-            vid.playbackRate = data.playbackRate;
-        if ($_GET('autoplay') !== null) vid.play();
-        resetControlTimeout();
-    } catch (error) {
-        showBigIndicator('block', true);
-        _id('playPauseBig').innerHTML = 'block';
-        _id('playPauseBig').classList.add('disabled');
-        window.top.postMessage({'failed': true}, '*');
-    }
+try {
+    if (!$_GET('src')) throw new Error('No src provided');
+    vid.src = atob($_GET('src')).replace('"', '');
+    if (data.playbackRate)
+        vid.playbackRate = data.playbackRate;
+    if ($_GET('autoplay') !== null) vid.play();
+    resetControlTimeout();
+} catch (error) {
+    showBigIndicator('block', true);
+    _id('playPauseBig').innerHTML = 'block';
+    _id('playPauseBig').classList.add('disabled');
+    window.top.postMessage({'failed': true}, '*');
+    _id('loadingSpinner').style.opacity = 0;
+    console.log(`Initial load error: ${error.message}`);
 }
-
-// Handle loading a custom script
-if ($_GET('script')) {
-    try {
-        let script = atob($_GET('script')).replace('"', '');
-        _id('body').insertAdjacentHTML('beforeend', `
-            <script src="${script}"></script>
-        `);
-    } catch (error) {}
-}
-
-// Make the background transparent if requested
-if ($_GET('noBackground') !== null) {
-    _id('body').style.background = "rgba(0, 0, 0, 0)";
-}
-
-// Process messages from the parent
-window.onmessage = function(e) {
-    let data = e.data;
-    if (data.cmd == 'play') vid.play();
-    if (data.cmd == 'pause') vid.pause();
-    if (data.cmd == 'time') vid.currentTime = data.time;
-};
 
 // Check for blur settings
-checkBlur();
+checkDynamicSettings();
