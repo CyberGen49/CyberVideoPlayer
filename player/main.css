@@ -274,6 +274,7 @@ video {
     .pointer { display: none !important; }
 
     #controlBar { bottom: 15px; }
+    #controlsTopRight, #controlsTopLeft { top: 15px; }
 
     #progressSlider { opacity: 1; }
 
