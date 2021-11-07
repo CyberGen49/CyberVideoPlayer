@@ -155,7 +155,8 @@ function checkDynamicSettings() {
             </style>
         `)
     }
-    if (data.fit) vid.style.objectFit = 'cover';
+
+    if (data.fit && window.isFullscreen) {vid.style.objectFit = 'cover';}
     else vid.style.objectFit = '';
 }
 
@@ -220,6 +221,17 @@ function toggleMute() {
     }
 }
 
+// Toggles fitting to screen
+function toggleFit() {
+    if (window.data.fit) {
+        window.data.fit = false;
+    } else {
+        window.data.fit = true;
+    }
+    updateSettingsStore();
+    checkDynamicSettings();
+}
+
 // Flashes a big centered icon
 var bigIndicatorTimeout;
 function showBigIndicator(icon, persist = false, id = 'bigIndicator') {
@@ -227,14 +239,14 @@ function showBigIndicator(icon, persist = false, id = 'bigIndicator') {
     clearTimeout(window.bigIndicatorTimeout);
     _id(id).innerHTML = icon;
     _id(id).style.opacity = 0;
-    _id(id).style.display = "";
+    _id(id).classList.remove('hidden');
     window.bigIndicatorTimeout = setTimeout(() => {
         _id(id).style.opacity = 1;
         if (!persist) {
             window.bigIndicatorTimeout = setTimeout(() => {
                 _id(id).style.opacity = 0;
                 window.bigIndicatorTimeout = setTimeout(() => {
-                    _id(id).style.display = "none";
+                    _id(id).classList.remove('hidden');
                 }, 300);
             }, 300);
         }
@@ -385,16 +397,27 @@ _id('fullscreen').addEventListener('click', function() {
     else
         document.documentElement.requestFullscreen({ navigationUI: 'hide' });
 });
+var isFullscreen = false;
 document.onfullscreenchange = function() {
-    if (document.fullscreenElement !== null)
+    if (document.fullscreenElement !== null) {
         _id('fullscreen').innerHTML = 'fullscreen_exit';
-    else
+        window.isFullscreen = true;
+        _id('fitToScreenDiv').classList.remove('hidden');
+        _id('fitToScreenCont').classList.remove('hidden');
+    }
+    else {
         _id('fullscreen').innerHTML = 'fullscreen';
+        window.isFullscreen = false;
+        _id('fitToScreenDiv').classList.add('hidden');
+        _id('fitToScreenCont').classList.add('hidden');
+    }
+    checkDynamicSettings();
 }
 
 // Handle jumping back and forward in time
 _id('backward').addEventListener('click', function() {
     resetControlTimeout();
+    if (!window.controlsVisible) return;
     _id('progressTime').innerHTML = secondsFormat(vid.currentTime-10);
     vid.currentTime = (vid.currentTime-10);
     showBigIndicator('replay_10');
@@ -403,6 +426,7 @@ _id('backward').addEventListener('click', function() {
 });
 _id('forward').addEventListener('click', function() {
     resetControlTimeout();
+    if (!window.controlsVisible) return;
     _id('progressTime').innerHTML = secondsFormat(vid.currentTime+10);
     vid.currentTime = (vid.currentTime+10);
     if (vid.currentTime == vid.duration)
@@ -410,6 +434,27 @@ _id('forward').addEventListener('click', function() {
     showBigIndicator('forward_10');
     if (mediaQuery("(pointer: coarse)"))
         showBigIndicator('forward_10', false, 'bigIndicatorSmRight');
+});
+
+// Handle the fit to screen button
+_id('fitToScreen').addEventListener('click', function() {
+    resetControlTimeout();
+    if (!window.controlsVisible) return;
+    toggleFit();
+});
+
+// Handle the download button
+_id('download').addEventListener('click', function() {
+    resetControlTimeout();
+    if (!window.controlsVisible) return;
+    window.open(vid.src, '_blank');
+});
+
+// Handle the open in new tab button
+_id('openInTab').addEventListener('click', function() {
+    resetControlTimeout();
+    if (!window.controlsVisible) return;window.open(`${window.location.href}&start=${vid.currentTime}`, '_blank'); 
+    vid.pause();
 });
 
 // Handle the progress slider
@@ -540,22 +585,6 @@ document.addEventListener("contextmenu", function(e) {
     data.push({
         'disabled': !window.vidCanPlay,
         'type': 'item',
-        'id': 'fit',
-        'text': (() => {
-            if (window.data.fit) return "Fit to video";
-            else return "Fit to screen";
-        })(),
-        'icon': 'fit_screen',
-        'action': () => {
-            if (window.data.fit) window.data.fit = false;
-            else window.data.fit = true;
-            updateSettingsStore();
-            checkDynamicSettings();
-        }
-    });
-    data.push({
-        'disabled': !window.vidCanPlay,
-        'type': 'item',
         'id': 'loop',
         'text': (() => {
             if (vid.loop) return "Turn off loop"
@@ -566,22 +595,6 @@ document.addEventListener("contextmenu", function(e) {
             if (vid.loop) vid.loop = false;
             else vid.loop = true;
         }
-    });
-    data.push({
-        'disabled': !window.vidCanPlay,
-        'type': 'item',
-        'id': 'backward',
-        'text': 'Jump backward 10s',
-        'icon': 'replay_10',
-        'action': () => { _id('backward').click(); }
-    });
-    data.push({
-        'disabled': !window.vidCanPlay,
-        'type': 'item',
-        'id': 'forward',
-        'text': 'Jump forward 10s',
-        'icon': 'forward_10',
-        'action': () => { _id('forward').click(); }
     });
     data.push({
         'disabled': !window.vidCanPlay,
@@ -647,25 +660,6 @@ document.addEventListener("contextmenu", function(e) {
         'text': 'Cast (Not implemented)',
         'icon': 'cast'
     });
-    if (isIframe || $_GET('noDownload') === null) data.push({'type': 'sep'});
-    if (isIframe) data.push({
-        'type': 'item',
-        'id': 'open',
-        'text': 'Open player in new tab...',
-        'icon': 'open_in_new',
-        'action': () => {
-            window.open(`${window.location.href}&start=${vid.currentTime}`, '_blank'); 
-            vid.pause();
-        }
-    });
-    if ($_GET('noDownload') === null) data.push({
-        'disabled': !window.vidCanPlay,
-        'type': 'item',
-        'id': 'download',
-        'text': 'Download video',
-        'icon': 'download',
-        'action': () => { window.open(vid.src, '_blank'); }
-    });
     data.push({'type': 'sep'});
     data.push({
         'type': 'item',
@@ -725,7 +719,6 @@ window.addEventListener('load', function() {
         if (data.playbackRate)
             vid.playbackRate = data.playbackRate;
         if ($_GET('autoplay') !== null) vid.play();
-        resetControlTimeout();
     } catch (error) {
         showBigIndicator('block', true);
         _id('playPauseBig').innerHTML = 'block';
@@ -734,12 +727,14 @@ window.addEventListener('load', function() {
         _id('loadingSpinner').style.opacity = 0;
         console.log(`Initial load error: ${error.message}`);
     }
+    resetControlTimeout();
 });
 
 // Handle dynamically updating button icons
 var dynamicButtonInterval = setInterval(() => {
     if (vidCanPlay) {
         _id('playPauseBig').classList.remove('disabled');
+        // Update the icon for the play/pause buttons
         if (vid.playing) {
             window.top.postMessage({'status': 'playing'}, '*');
             _id('playPause').innerHTML = 'pause';
@@ -754,14 +749,29 @@ var dynamicButtonInterval = setInterval(() => {
             _id('playPause').innerHTML = 'play_arrow';
             _id('playPauseBig').innerHTML = 'play_arrow';
         }
+        // Update the icon for the volume button
+        if (vid.muted) {
+            _id('volume').innerHTML = 'volume_off';
+        } else {
+            _id('volume').innerHTML = 'volume_up';
+        }
+        // Update the colour of the fit to screen button
+        if (window.data.fit) {
+            _id('fitToScreen').style.color = '#6ec2fa';
+        } else {
+            _id('fitToScreen').style.color = '';
+        }
+        // Update the display of the open and download buttons
+        _id('openInTab').classList.remove('disabled');
+        _id('download').classList.remove('disabled');
+        if (!isIframe)
+            _id('openInTab').classList.add('hidden');
+        else _id('controlsTopLeft').classList.remove('hidden');
+        if ($_GET('noDownload') !== null)
+            _id('download').classList.add('hidden');
+        else _id('controlsTopLeft').classList.remove('hidden');
     } else {
         _id('playPauseBig').classList.add('disabled');
-    }
-
-    if (vid.muted) {
-        _id('volume').innerHTML = 'volume_off';
-    } else {
-        _id('volume').innerHTML = 'volume_up';
     }
 }, 250);
 

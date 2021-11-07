@@ -32,31 +32,45 @@
                     </div>
                 </div>
                 <div id="bigIndicators" class="pointer">
-                    <div id="bigIndicator" class="material-icons acrylic" style="display: none"></div>
+                    <div id="bigIndicator" class="material-icons acrylic hidden"></div>
                 </div>
                 <div id="controls" class="visible">
                     <div class="touch">
                         <div id="controlsMobile" class="row no-gutters">
                             <div id="mobHitLeft" class="col d-flex align-items-center justify-content-center">
-                                <div id="bigIndicatorSmLeft" class="material-icons bigIndicatorSm acrylic" style="display: none"></div>
+                                <div id="bigIndicatorSmLeft" class="material-icons bigIndicatorSm acrylic hidden"></div>
                             </div>
                             <div class="col d-flex align-items-center justify-content-center">
                                 <div id="playPauseBig" class="bigButton material-icons acrylic">play_arrow</div>
                             </div>
                             <div id="mobHitRight" class="col d-flex align-items-center justify-content-center">
-                                <div id="bigIndicatorSmRight" class="material-icons bigIndicatorSm acrylic" style="display: none"></div>
+                                <div id="bigIndicatorSmRight" class="material-icons bigIndicatorSm acrylic hidden"></div>
                             </div>
+                        </div>
+                    </div>
+                    <div id="controlsTopLeft" class="row no-gutters acrylic hidden">
+                        <div class="col-auto d-flex align-items-center">
+                            <span id="openInTab" class="controlsButton material-icons pointer disabled">open_in_new</span>
+                        </div>
+                        <div class="col-auto d-flex align-items-center">
+                            <span id="download" class="controlsButton material-icons pointer disabled">download</span>
+                        </div>
+                    </div>
+                    <div id="controlsTopRight" class="row no-gutters acrylic">
+                        <div class="col-auto d-flex align-items-center">
+                            <span id="backward" class="controlsButton material-icons pointer">replay_10</span>
+                        </div>
+                        <div class="col-auto d-flex align-items-center">
+                            <span id="forward" class="controlsButton material-icons pointer">forward_10</span>
+                        </div>
+                        <div id="fitToScreenDiv" class="controlsDiv hidden"></div>
+                        <div id="fitToScreenCont" class="col-auto d-flex align-items-center pointer hidden">
+                            <span id="fitToScreen" class="controlsButton material-icons">fit_screen</span>
                         </div>
                     </div>
                     <div id="controlBar" class="row no-gutters acrylic">
                         <div class="col-auto d-flex align-items-center pointer">
                             <span id="playPause" class="controlsButton material-icons">play_arrow</span>
-                        </div>
-                        <div class="col-auto d-flex align-items-center" style="display: none !important">
-                            <span id="backward" class="controlsButton material-icons pointer">replay_10</span>
-                        </div>
-                        <div class="col-auto d-flex align-items-center" style="display: none !important">
-                            <span id="forward" class="controlsButton material-icons pointer">forward_10</span>
                         </div>
                         <div class="col-auto d-flex align-items-center">
                             <span id="progressTime" class="controlsText">0:00</span>

@@ -107,6 +107,11 @@ player.contentWindow.postMessage(msg, '*');
 ## Changelog
 Hotfix commits to the repo aren't mentioned here.
 
+### 1.6.0 - 2021-11-06
+* Now the 'fit to screen' option is only shown when the player is fullscreen
+* Moved a lot of the menu options to buttons shown at the top left and right of the player
+    * The 'fit to screen' button is only displayed while in fullscreen
+
 ### 1.5.0 - 2021-11-05
 * Added a fade-in animation when the player loads
 * Removed the `noBackground` and `script` parameters
