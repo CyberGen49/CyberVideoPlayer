@@ -142,6 +142,17 @@ function hideDropdown(id) {
     }, 200);
 }
 
+// Copies the specified text to the clipboard
+function copyText(value) {
+    let tempInput = document.createElement("input");
+    tempInput.value = value;
+    document.body.appendChild(tempInput);
+    tempInput.select();
+    document.execCommand("copy");
+    document.body.removeChild(tempInput);
+    console.log("Copied text to clipboard: "+value);
+}
+
 // Checks and updates dynamic settings
 function checkDynamicSettings() {
     if (_id('noBlurStyle')) _id('noBlurStyle').remove();
@@ -415,25 +426,26 @@ document.onfullscreenchange = function() {
 }
 
 // Handle jumping back and forward in time
+const jumpTime = function(time, icon) {
+    _id('progressTime').innerHTML = secondsFormat(vid.currentTime+time);
+    vid.currentTime = (vid.currentTime+time);
+    if (vid.currentTime == vid.duration)
+        vid.currentTime = (vid.currentTime-0.25);
+    showBigIndicator(icon);
+    if (mediaQuery("(pointer: coarse)")) {
+        if (time < 0) showBigIndicator(icon, false, 'bigIndicatorSmLeft');
+        else          showBigIndicator(icon, false, 'bigIndicatorSmRight');
+    }
+}
 _id('backward').addEventListener('click', function() {
     resetControlTimeout();
     if (!window.controlsVisible) return;
-    _id('progressTime').innerHTML = secondsFormat(vid.currentTime-10);
-    vid.currentTime = (vid.currentTime-10);
-    showBigIndicator('replay_10');
-    if (mediaQuery("(pointer: coarse)"))
-        showBigIndicator('replay_10', false, 'bigIndicatorSmLeft');
+    jumpTime(-10, 'replay_10');
 });
 _id('forward').addEventListener('click', function() {
     resetControlTimeout();
     if (!window.controlsVisible) return;
-    _id('progressTime').innerHTML = secondsFormat(vid.currentTime+10);
-    vid.currentTime = (vid.currentTime+10);
-    if (vid.currentTime == vid.duration)
-        vid.currentTime = (vid.currentTime-0.25);
-    showBigIndicator('forward_10');
-    if (mediaQuery("(pointer: coarse)"))
-        showBigIndicator('forward_10', false, 'bigIndicatorSmRight');
+    jumpTime(10, 'forward_10');
 });
 
 // Handle the fit to screen button
@@ -503,7 +515,7 @@ var mobJump = {
 _id('mobHitLeft').addEventListener('click', function(e) {
     if ((Date.now()-window.mobJump.left) < 400) {
         e.preventDefault();
-        _id('backward').click();
+        jumpTime(-10, 'replay_10');
     }
     window.mobJump.left = Date.now();
     window.mobJump.right = 0;
@@ -511,7 +523,7 @@ _id('mobHitLeft').addEventListener('click', function(e) {
 _id('mobHitRight').addEventListener('click', function(e) {
     if ((Date.now()-window.mobJump.right) < 400) {
         e.preventDefault();
-        _id('forward').click();
+        jumpTime(10, 'forward_10');
     }
     window.mobJump.right = Date.now();
     window.mobJump.left = 0;
@@ -660,6 +672,17 @@ document.addEventListener("contextmenu", function(e) {
         'text': 'Cast (Not implemented)',
         'icon': 'cast'
     });
+    if ($_GET('noCopyUrl') === null) {
+        data.push({'type': 'sep'});
+        data.push({
+            'disabled': !window.vidCanPlay,
+            'type': 'item',
+            'id': 'copyUrl',
+            'text': 'Copy video URL',
+            'icon': 'link',
+            'action': () => { copyText(vid.src); }
+        });
+    }
     data.push({'type': 'sep'});
     data.push({
         'type': 'item',

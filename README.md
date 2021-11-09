@@ -52,7 +52,8 @@ These parameters control various aspects of the player. Pass them after the main
 ### Optional
 * `autoplay`: The video will automatically play on load
 * `start=t`: The video will move to `t` seconds on load
-* `noDownload`: Removes the Download context menu option
+* `noDownload`: Removes the Download button
+* `noCopyUrl`: Removes the 'Copy video URL' context menu option
 * `noRestore`: Prevents video progress from being saved and restored
 
 ### Error icons
@@ -106,6 +107,11 @@ player.contentWindow.postMessage(msg, '*');
 
 ## Changelog
 Hotfix commits to the repo aren't mentioned here.
+
+### 1.7.0 - 2021-11-08
+* Fixed sometimes misbehaving double-tap left and right to jump
+* Now the control bars and buttons are rounded rectangles instead of circles/pills
+* Added a menu option to copy the video URL
 
 ### 1.6.0 - 2021-11-06
 * Now the 'fit to screen' option is only shown when the player is fullscreen

@@ -44,7 +44,7 @@ video {
     width: calc(100% - 30px);
     height: 45px;
     padding: 0px 5px;
-    border-radius: 1000px;
+    border-radius: 12px;
 }
 #controlsTopRight, #controlsTopLeft {
     position: absolute;
@@ -52,7 +52,7 @@ video {
     right: 15px;
     height: 45px;
     padding: 0px 5px;
-    border-radius: 1000px;
+    border-radius: 12px;
 }
 #controlsTopLeft {
     right: initial;
@@ -82,7 +82,7 @@ video {
     color: #fff;
     padding: 6px;
     margin: 0px 3px;
-    border-radius: 100px;
+    border-radius: 8px;
     transition: 0.1s ease-in-out;
 }
 .controlsButton.disabled {
