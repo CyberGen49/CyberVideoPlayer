@@ -45,6 +45,8 @@ video {
     height: 45px;
     padding: 0px 5px;
     border-radius: 12px;
+    flex-wrap: nowrap;
+    overflow: hidden;
 }
 #controlsTopRight, #controlsTopLeft {
     position: absolute;
@@ -53,6 +55,8 @@ video {
     height: 45px;
     padding: 0px 5px;
     border-radius: 12px;
+    flex-wrap: nowrap;
+    overflow: hidden;
 }
 #controlsTopLeft {
     right: initial;

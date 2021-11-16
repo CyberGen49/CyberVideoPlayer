@@ -271,9 +271,9 @@ function resetControlTimeout(timeout = 3000) {
     clearTimeout(controlsTimeout);
     _id('body').style.cursor = 'initial';
     _id('controls').classList.add('visible');
-    _id('loadingSpinner').style.paddingBottom = '55px';
-    _id('bigIndicators').style.paddingBottom = '55px';
-    _id('controlsMobile').style.paddingBottom = '55px';
+    _id('loadingSpinner').style.paddingBottom = '30px';
+    _id('bigIndicators').style.paddingBottom = '30px';
+    _id('controlsMobile').style.paddingBottom = '30px';
     // This small timeout makes sure other functions have time to react
     // to controls not being visible before they're marked as visible
     setTimeout(() => {

@@ -108,6 +108,9 @@ player.contentWindow.postMessage(msg, '*');
 ## Changelog
 Hotfix commits to the repo aren't mentioned here.
 
+### 1.7.1 - 2021-11-16
+* Updated the vertical alignment of mobile controls
+
 ### 1.7.0 - 2021-11-08
 * Fixed sometimes misbehaving double-tap left and right to jump
 * Now the control bars and buttons are rounded rectangles instead of circles/pills
